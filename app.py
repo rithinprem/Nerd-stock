@@ -20,13 +20,13 @@ from graph import plot
 
 
 app = Flask(__name__)
-# blocked_user_agents = ["Go-http-client/1.1"]
+blocked_user_agents = ["Go-http-client/1.1"]
 
-# @app.before_request
-# def block_user_agent():
-#     user_agent = request.headers.get('User-Agent')
-#     if user_agent in blocked_user_agents:
-#         abort(403)
+@app.before_request
+def block_user_agent():
+    user_agent = request.headers.get('User-Agent')
+    if user_agent in blocked_user_agents:
+        abort(403)
 
 json_object = None
 
