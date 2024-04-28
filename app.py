@@ -43,16 +43,14 @@ def index():
             "https://trendlyne.com/portfolio/bulk-block-deals/53945/kotak-mahindra-group-portfolio/"
             ]
 
-    headers={
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Cache-Control': 'max-age=0',
-        'Referer': 'https://www.google.com/',  # Add the referer of the website you're scraping data from
-        'Upgrade-Insecure-Requests': '1',
-    }
+    headers={"authority":"trendlyne.com",
+            "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "Accept-Encoding":"gzip, deflate, br, zstd",
+            "Accept-Language":"en-US,en;q=0.9",
+            "Sec-Ch-Ua":'"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+            "User-Agent":"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36",
+            "Cookie":"csrftoken=fJIHWYF2RLrOTf5nYqwAHitEkOt9bDyYHwoflEeRr3YBFYE35gLYituFIvWh0wXa"
+            }
 
 
     def load_url(url):
