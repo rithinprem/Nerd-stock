@@ -12,7 +12,8 @@ def plot(df):
               template='plotly_white') # Clean, good for financial charts
     
 
-    fig.update_layout(plot_bgcolor='white',  # Clean background
+    fig.update_layout(  hovermode='closest',
+                        plot_bgcolor='white',  # Clean background
                         xaxis=dict(spikecolor="#8f919d",
                                     showline=True,
                                     showgrid=True,
