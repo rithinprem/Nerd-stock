@@ -59,7 +59,8 @@ def plot(df):
     fig.update_traces(hovertemplate=hover_template,
                     line_color='#00b386',  # Set line color
                     )
-
+    fig.layout.xaxis.fixedrange = True
+    fig.layout.yaxis.fixedrange = True
     graphHTML = pio.to_html(fig, full_html=False)
 
     return graphHTML
