@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Picks</title>
+    <script type="text/javascript"
+        src="http://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=iJVQQo1Uq-88FD0aMyN8-cBcMf7mWNLd3PgoknFI3TDaClOdOjpbTPSzy5z9GWzK2ZUZG4-GvMr4oJvtYstVXgZHHg1E2Nze8vyrlWiP1ys"
+        charset="UTF-8"></script>
+    <script type="text/javascript"
+        src="http://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=W4xpE_DrKhAcUvBb45BJothK4deV2r5Qnubqp1EGl6utFVoy5ULvFMbrN-tGJngs"
+        charset="UTF-8"></script>
+    <style>
+        body {
+            font-family: GrowwSans, NotoSans, system-ui;
+            padding: 20px;
+
+        }
+
+        .body {
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: min-content;
+            margin: 0;
+        }
+
+        .centered {
+            text-align: center;
+        }
+
+
+        .table_Data {
+            font-size: smaller;
+            max-height: 65vh;
+            overflow-y: auto;
+            width: min-content;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 80%;
+            border-spacing: 0;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #666;
+            font-weight: bold;
+            text-transform: uppercase;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        td a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .table_Data {
+                font-size: 12px;
+                /* Reduce font size for smaller screens */
+            }
+
+            th,
+            td {
+                padding: 8px;
+                /* Further reduce padding for smaller screens */
+            }
+
+            h1 {
+                font-size: 20px;
+                /* Reduce heading font size for smaller screens */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="centered">Stock Picks</h1>
+    <div class="body">
+        <div class="table_Data">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stock</th>
+                        <th>Client Name</th>
+                        <th>Exchange</th>
+                        <th>Deal Type</th>
+                        <th>Action</th>
+                        <th>Date</th>
+                        <th>Avg. Price</th>
+                        <th>Quantity</th>
+                        <th>Percentage Traded %</th>
+                        <th>Stock Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data %}
+                    <tr>
+                        <td>{{ item['Stock'] }}</td>
+                        <td>{{ item['Client Name'] }}</td>
+                        <td>{{ item['Exchange'] }}</td>
+                        <td>{{ item['Deal Type'] }}</td>
+                        <td>{{ item['Action'] }}</td>
+                        <td>{{ item['Date'] }}</td>
+                        <td>{{ item['Avg. Price'] }}</td>
+                        <td>{{ item['Quantity'] }}</td>
+                        <td>{{ item['Percentage Traded %'] }}</td>
+                        <td><a href="{{ url_for('stock_details', stock_id=item['stock_id']) }}">View stock</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Code injected by live-server -->
+</body>
+
+</html>

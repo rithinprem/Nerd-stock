@@ -1,0 +1,7 @@
+Flask 
+plotly
+numpy 
+pandas 
+requests
+bs4 
+gunicorn
