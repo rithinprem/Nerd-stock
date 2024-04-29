@@ -74,6 +74,3 @@ def plot(df, flag):
 
     return graphHTML
 
-# Example usage:
-# Assuming you have a DataFrame 'df' containing your data and 'flag' indicating stock movement direction
-# html_output = plot(df, flag)
