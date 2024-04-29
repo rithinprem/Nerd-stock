@@ -28,7 +28,9 @@ class GROWW:
             data = data.json()['candles']
             df = pd.DataFrame(data,columns=['Timestamp','Price'])
             df.Timestamp = pd.to_datetime([entry[0] for entry in data], unit='s', utc=True).tz_convert('Asia/Kolkata')
-        return df
+
+        current_price = float(df.tail(1).Price.values[0])
+        return df,current_price
 
 
 

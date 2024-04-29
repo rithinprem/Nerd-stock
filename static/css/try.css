@@ -54,7 +54,6 @@
 }
 
 .container-1 {
-    background-color:rgb(232 245 245);
     width: 52vw;
     margin-left: 5vw;
     display: flex;
@@ -72,6 +71,12 @@
     justify-content: space-between;
 }
 
+
+.stock_price{
+    font-size: 2.25rem;
+    font-weight: 200;
+    margin-left: inherit;
+}
 
 .c-1-1 {
     background-color: rgb(255, 255, 255);
@@ -243,27 +248,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* CSS specific to screen sizes greater than 600px (adjust as needed) */
 @media only screen and (min-width: 600px) {
     /* Add your desktop-specific styles here */
@@ -326,11 +310,16 @@
         /* Align the text inside <p> to the left */
         margin: 0;
         /* Remove default margin of <p> tag */
-        font-size: 20px;
+        font-size: 16px;
     }
 
     .data {
         flex-direction: column;
+        border: none;
+    }
+
+    .stock_price{
+        
     }
 
     .container-1,
