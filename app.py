@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,Response
+from flask import Flask, render_template,request,Response,abort
 import plotly.express as px   #for plotting
 import plotly.io as pio
 import numpy as np
@@ -20,7 +20,13 @@ from graph import plot
 
 
 app = Flask(__name__)
+blocked_user_agents = ["Go-http-client/1.1"]
 
+@app.before_request
+def block_user_agent():
+    user_agent = request.headers.get('User-Agent')
+    if user_agent in blocked_user_agents:
+        abort(403)
 
 json_object = None
 
@@ -214,7 +220,6 @@ def search():
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
         'Connection': 'keep-alive',
         'Cache-Control': 'max-age=0',
         'Referer': 'https://www.google.com/',
