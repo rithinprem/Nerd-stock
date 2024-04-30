@@ -52,7 +52,6 @@ def plot(df, flag):
         hoverlabel=dict(bgcolor='rgba(205, 255, 205, 0)',
                         font_family="GrowwSans, NotoSans, system-ui",
                         font_color='black',
-                        font_size=15,
                         bordercolor='rgb(255,255,255,0)',
                         namelength=-1,  # Prevent name truncation
                         align='left',  # Align label to the left
@@ -61,7 +60,7 @@ def plot(df, flag):
         hovermode='x unified'
     )
 
-    hover_template = '<b>Price:</b> \u20B9%{y:.2f}'
+    hover_template = '<b>\u20B9%{y:.2f}</b> '
     fig.update_xaxes(spikemode="across", spikethickness=0.5,spikecolor='black')
     fig.update_yaxes(spikemode="across", spikethickness=0.5,spikecolor='black')
     fig.update_traces(hovertemplate=hover_template,
