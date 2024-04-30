@@ -29,8 +29,7 @@ class GROWW:
             df = pd.DataFrame(data,columns=['Timestamp','Price'])
             df.Timestamp = pd.to_datetime([entry[0] for entry in data], unit='s', utc=True).tz_convert('Asia/Kolkata')
 
-        current_price = float(df.tail(1).Price.values[0])
-        return df,current_price
+        return df
 
 
 

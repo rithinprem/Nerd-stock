@@ -3,6 +3,7 @@ import plotly.io as pio
 import pandas as pd
 
 def plot(df, flag):
+    
     fig = px.line(df,
                   x='Timestamp',
                   y='Price',
@@ -66,7 +67,6 @@ def plot(df, flag):
                       fillcolor=('rgba(255,0,0,0.3)' if flag == -1 else 'rgba(0,179,134,0.3)'),  # Set fill color
                       )
 
-    print(flag)
     fig.layout.xaxis.fixedrange = True
     fig.layout.yaxis.fixedrange = True
 

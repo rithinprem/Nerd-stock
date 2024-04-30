@@ -130,103 +130,52 @@ def stock_details(stock_id):
 
     price_details = []
 
-    if eq.isnumeric() is False:   #its NSE stock
-        groww = GROWW(eq)         #object creation for GROWW for chart preparation
-        df = []
-        def thread1(groww):
-            dfresult,current_price = groww.df()
-            price_details.append(current_price)
-            df.append(dfresult)
-        t1 = threading.Thread(target=thread1,args=[groww])
-        t1.start()
-       
+    if eq.isnumeric() is False:   #NSE stock
+        price_details = []
         o = GOOGLEFIN(f'{eq}:NSE')
         stock_info_knowledge=[]
-        def thread2(o):
-            stock_info,stock_knowledge = o.stockinfo()
-            if stock_info:
-                stock_info_knowledge.append(stock_info)
-                Previous_Close = stock_info['Previous Close']
-                price_details.append(float(re.sub('[^0-9.]', '', Previous_Close)))
-            else:
-                eq = e[1].split(':')[1] 
-                o = GOOGLEFIN(f'{eq}:BOM')
-                stock_info,stock_knowledge = o.stockinfo()
-                Previous_Close = stock_info['Previous Close']
-                price_details.append(float(re.sub('[^0-9.]', '', Previous_Close)))
-                stock_info_knowledge.append(stock_info)
-                if stock_knowledge:
-                    stock_info_knowledge.append(stock_knowledge)
-                else:
-                    stock_info_knowledge.append('')
-                return 
-            
-            if stock_knowledge:
-                stock_info_knowledge.append(stock_knowledge)
-            else:
-                stock_info_knowledge.append('')
-        
-        t2 = threading.Thread(target=thread2,args=[o])
-        t2.start()
-        
-
-        t1.join()
-        t2.join()
-
-        df = df[0]
-        stock_info = stock_info_knowledge[0]
-        stock_knowledge = stock_info_knowledge[1]
-        current_price = price_details[0]
-        previous_price = price_details[1]
-        day_change = str(abs(round((current_price - previous_price)/previous_price*100,2)))+"%"
-        flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
-        print(current_price)
-        print("Previous price",previous_price)
-        print("Day change",day_change)
-
-        graphHTML = plot(df,flag)   #plot using plotly
-
-
-    else:                         #BSE stock
-        groww = GROWW(eq)         #object creation for GROWW for chart preparation
-        df = []
-        def thread1(groww):
-            dfresult,current_price = groww.df()
-            price_details.append(current_price)
-            df.append(dfresult)
-        t1 = threading.Thread(target=thread1,args=[groww])
-        t1.start()
-       
+        stock_info,stock_knowledge,current_price = o.stockinfo()
+        price_details.append(current_price)
+    else:                        #BSE stock
+        price_details = []
+        flag_nse = False
         o = GOOGLEFIN(f'{eq}:BOM')
         stock_info_knowledge=[]
-        def thread2(o):
-            stock_info,stock_knowledge = o.stockinfo()
-            Previous_Close = stock_info['Previous Close']
-            price_details.append(float(re.sub('[^0-9.]', '', Previous_Close)))
-            stock_info_knowledge.append(stock_info)
-            if stock_knowledge:
-                stock_info_knowledge.append(stock_knowledge)
-            else:
-                stock_info_knowledge.append('')
-        
-        t2 = threading.Thread(target=thread2,args=[o])
-        t2.start()
-        
+        stock_info,stock_knowledge,current_price = o.stockinfo()
+        price_details.append(current_price)
 
-        t1.join()
-        t2.join()
 
-        df = df[0]
-        stock_info = stock_info_knowledge[0]
-        stock_knowledge = stock_info_knowledge[1]
-        current_price = price_details[0]
-        previous_price = price_details[1]
-        day_change = str(abs(round((current_price - previous_price)/previous_price*100,2)))+"%"
-        flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
-        print(current_price)
-        print("Previous price",previous_price)
-        print("Day change",day_change)
-        graphHTML = plot(df,flag)   #plot using plotly
+    Previous_Close = stock_info['Previous Close']
+    price_details.append(float(re.sub('[^0-9.]', '', Previous_Close)))
+
+    stock_info_knowledge.append(stock_info)
+    if stock_knowledge:
+        stock_info_knowledge.append(stock_knowledge)
+    else:
+        stock_info_knowledge.append('')
+
+    groww = GROWW(eq)         #object creation for GROWW for chart preparation
+    df = []
+    dfresult= groww.df()
+    df.append(dfresult)
+    
+
+    
+    df = df[0]
+    stock_info = stock_info_knowledge[0]
+    stock_knowledge = stock_info_knowledge[1]
+    current_price = price_details[0]
+    previous_price = price_details[1]
+    day_change = str(abs(round((current_price - previous_price)/previous_price*100,2)))+"%"
+    flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
+
+    # print("Current price",current_price)
+    # print("Previous price",previous_price)
+    # print("Day change",day_change)
+    # print(stock_knowledge)
+
+
+    graphHTML =  plot(df,flag)   #plot using plotly
 
     return render_template('graph.html', graphHTML=graphHTML,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag)
 
@@ -265,36 +214,40 @@ def search():
 
 @app.route('/result/<result>')
 def result(result):
+        flag_nse = True
         price_details = []
-        eq=result.split('. ')[1]
+        eq = result.split("|")[2]
+        o = GOOGLEFIN(f'{eq}:NSE')
+        stock_info_knowledge=[]
+        stock_info,stock_knowledge,current_price = o.stockinfo()
+        price_details.append(current_price)
+        if not stock_info:
+          price_details = []
+          flag_nse = False
+          eq = result.split("|")[1]
+          o = GOOGLEFIN(f'{eq}:BOM')
+          stock_info_knowledge=[]
+          stock_info,stock_knowledge,current_price = o.stockinfo()
+          price_details.append(current_price)
+
+
+        Previous_Close = stock_info['Previous Close']
+        price_details.append(float(re.sub('[^0-9.]', '', Previous_Close)))
+
+        stock_info_knowledge.append(stock_info)
+        if stock_knowledge:
+            stock_info_knowledge.append(stock_knowledge)
+        else:
+            stock_info_knowledge.append('')
+
+        eq=(result.split('|')[2] if flag_nse else result.split('|')[1])
         groww = GROWW(eq)         #object creation for GROWW for chart preparation
         df = []
-        def thread1(groww):
-            dfresult,current_price = groww.df()
-            df.append(dfresult)
-            price_details.append(current_price)
-        t3 = threading.Thread(target=thread1,args=[groww])
-        t3.start()
-       
-        o = GOOGLEFIN(f'{eq}:BOM')
-        stock_info_knowledge=[]
-        def thread2(o):
-            stock_info,stock_knowledge = o.stockinfo()
-            Previous_Close = stock_info['Previous Close']
-            price_details.append(float(re.sub('[^0-9.]', '', Previous_Close)))
-            stock_info_knowledge.append(stock_info)
-            if stock_knowledge:
-                stock_info_knowledge.append(stock_knowledge)
-            else:
-                stock_info_knowledge.append('')
-        
-        t4 = threading.Thread(target=thread2,args=[o])
-        t4.start()
+        dfresult= groww.df()
+        df.append(dfresult)
         
 
-        t3.join()
-        t4.join()
-
+        
         df = df[0]
         stock_info = stock_info_knowledge[0]
         stock_knowledge = stock_info_knowledge[1]
@@ -303,14 +256,17 @@ def result(result):
         day_change = str(abs(round((current_price - previous_price)/previous_price*100,2)))+"%"
         flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
 
-        print(current_price)
-        print("Previous price",previous_price)
-        print("Day change",day_change)
+        # print("Current price",current_price)
+        # print("Previous price",previous_price)
+        # print("Day change",day_change)
+        # print(stock_knowledge)
 
-        stock_name =result.split('. ')[0]
-        graphHTML = plot(df,flag)   #plot using plotly
+        stock_name = result.split("|")[0]
+
+        graphHTML =  plot(df,flag)   #plot using plotly
 
         return render_template('graph.html', graphHTML=graphHTML,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag)
+
     
 if __name__ == '__main__':
     app.run(debug=True)

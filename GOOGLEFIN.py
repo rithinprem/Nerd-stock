@@ -1,8 +1,7 @@
 import requests
-import pandas as pd
-import numpy as np
 from bs4 import BeautifulSoup
 import json
+import re
 
 class GOOGLEFIN:
 
@@ -29,7 +28,13 @@ class GOOGLEFIN:
         except Exception as e:
             stock_knowledge=""
 
-        return json_object,stock_knowledge
+        try:
+          current_price = soup.find('div',{'class':'YMlKec fxKbKc'}).get_text()
+          current_price = float(re.sub('[^0-9.]', '', current_price))
+        except Exception as e:
+          current_price = ''
+
+        return json_object,stock_knowledge,current_price
     
 
    
