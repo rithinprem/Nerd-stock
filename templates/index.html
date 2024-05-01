@@ -6,14 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Picks</title>
     <link rel="icon" href="../static/symbol.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
 
     <style>
         body {
-            font-family: GrowwSans, NotoSans, system-ui;
+            font-family: "Bitter", serif;
             padding: 20px;
-            background-image: url('../static/Background.png');
             background-repeat: no-repeat;
             background-size: cover;
+            background-color: whitesmoke;
         }
 
         .body {
@@ -36,6 +40,7 @@
             overflow-y: auto;
             width: min-content;
             border-radius: 5px;
+            border: 1px solid;
         }
 
         table {
@@ -56,7 +61,7 @@
         }
 
         th {
-            background-color: #f2f2f2;
+            background-color: #a4eaa4;
             color: darkslategrey;
             font-weight: bold;
             text-transform: uppercase;
@@ -73,6 +78,11 @@
             text-decoration: none;
         }
 
+        .date-column {
+            white-space: nowrap;
+            /* Prevent text from wrapping */
+        }
+
         /* width */
         ::-webkit-scrollbar {
             width: 10px;
@@ -80,7 +90,8 @@
 
         /* Track */
         ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
+            background: #80808069;
+            ;
         }
 
         /* Handle */
@@ -117,11 +128,25 @@
                 background-size: cover;
 
             }
+
+            table {
+                font-size: 11px;
+            }
+
+            .explain_terms {
+                font-size: 12px;
+
+            }
+
+            .centered{
+                margin-top: 20px;
+            }
         }
     </style>
 </head>
 
 <body>
+    
     <h1 class="centered">Stock Picks</h1>
     <div class="body">
         <div class="table_Data">
@@ -148,8 +173,8 @@
                         <td>{{ item['Exchange'] }}</td>
                         <td>{{ item['Deal Type'] }}</td>
                         <td>{{ item['Action'] }}</td>
-                        <td>{{ item['Date'] }}</td>
-                        <td>{{ item['Avg. Price'] }}</td>
+                        <td class="date-column">{{ item['Date'] }}</td>
+                        <td>₹{{ item['Avg. Price'] }}</td>
                         <td>{{ item['Quantity'] }}</td>
                         <td>{{ item['Percentage Traded %'] }}</td>
                         <td><a href="{{ url_for('stock_details', stock_id=item['stock_id']) }}">View stock</a></td>
@@ -160,12 +185,14 @@
         </div>
     </div>
     <div class="explain_terms" style="margin-top: 60px;">
-        <p style="text-align: justify;"><b>Bulk deals</b> are defined as a transaction involving at least 0.5% of the total listed shares of a
+        <p style="text-align: justify;"><b>Bulk deals</b> are defined as a transaction involving at least 0.5% of the
+            total listed shares of a
             company. Unlike block deals, bulk deals happen during normal trading hours and are visible to all
             market participants. They show up on the volume charts in trading platforms and dynamically
             influence stock prices in real-time. </p>
 
-        <p style="text-align: justify;" > <b>Block deal</b> is defined as a single trade in which shares greater than 5,00,000 in number or more
+        <p style="text-align: justify;"> <b>Block deal</b> is defined as a single trade in which shares greater than
+            5,00,000 in number or more
             than Rs. 10 crores in value are traded. The minimum value for a block deal used to be Rs. 5 crores
             but in 2017 the Securities and Exchange Board of India (SEBI) hiked it to Rs. 10 crores. Block deals
             are executed during a special trading window called the block deal window. Since block deals in the

@@ -62,7 +62,7 @@
 }
 
 .container-2 {
-    background-color: rgb(167, 98, 13);
+    background-color: rgb(255, 255, 255);
     width: 25vw;
     margin-right: 5vw;
     height: auto;
@@ -85,13 +85,13 @@
 }
 
 .c-1-2 {
-    background-color: purple;
+    background-color: rgb(255, 255, 255);
     height: auto;
     margin-bottom: 100px;
 }
 
 .c-2-1 {
-    background-color: red;
+    background-color: rgb(255, 255, 255);
     height: auto;
 }
 

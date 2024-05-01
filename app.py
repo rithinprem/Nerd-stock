@@ -95,6 +95,7 @@ def index():
     df['Percentage Traded %'] = df['Percentage Traded %'].str.replace('%','')
     df['Percentage Traded %'] = pd.to_numeric(df['Percentage Traded %'],errors='coerce')
     df.sort_values(['Date','Percentage Traded %'],ascending=False,inplace=True)
+    df['Date'] = df['Date'].dt.strftime('%d-%b-%Y')
     df.Date = df.Date.astype('str')
     df=df.reset_index()
     df.drop('index',axis=1,inplace=True)
