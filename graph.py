@@ -1,6 +1,8 @@
 import plotly.express as px
 import plotly.io as pio
 import pandas as pd
+import json
+import plotly
 
 def plot(df, flag):
     
@@ -8,7 +10,7 @@ def plot(df, flag):
                   x='Timestamp',
                   y='Price',
                   title='Stock Price Chart',
-                  labels={'Price': 'Price (Rs)', 'Timestamp': 'Time'},
+                  labels={'Price': 'Price (Rs)', 'Timestamp': ''},
                   template='plotly_white',  # Clean, good for financial charts
                   range_x=[df['Timestamp'].min(), df['Timestamp'].max()],  # Set x-axis range
                   range_y=[df['Price'].min(), df['Price'].max()]  # Set y-axis range
@@ -72,7 +74,12 @@ def plot(df, flag):
     fig.layout.xaxis.fixedrange = True
     fig.layout.yaxis.fixedrange = True
 
-    graphHTML = pio.to_html(fig, full_html=False)
+
+    # graphHTML = pio.to_html(fig, full_html=False,config={'responsive': True})
+    graphHTML = json.dumps(fig,cls= plotly.utils.PlotlyJSONEncoder)
+    print(graphHTML)
+
+    
 
     return graphHTML
 

@@ -72,16 +72,18 @@
 }
 
 
-.stock_price{
+.stock_price {
     font-size: 2.25rem;
     font-weight: 200;
     margin-left: inherit;
 }
 
 .c-1-1 {
-    background-color: rgb(255, 255, 255);
-    height: auto;
-    width: auto;
+    height: 100%;
+    width: 100%;
+    border: 1px solid;
+    border-radius: 3px;
+    border-color: darkgrey;
 }
 
 .c-1-2 {
@@ -94,7 +96,6 @@
     background-color: rgb(255, 255, 255);
     height: auto;
 }
-
 
 
 /* Styling for the search box */
@@ -202,7 +203,7 @@
     margin-right: 25px;
 }
 
-.button{
+.button {
     width: 30%;
 }
 
@@ -212,39 +213,73 @@
     top: 100%;
     left: 0;
     right: -23px;
-    z-index: 999; /* Ensure search results are displayed above other content */
+    z-index: 999;
+    /* Ensure search results are displayed above other content */
     background-color: white;
     border: 1px solid #ccc;
     border-top: none;
     border-radius: 0 0 5px 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-height: 200px; /* Set maximum height for results */
-    overflow-y: auto; /* Add scrollbar if results exceed maximum height */
+    max-height: 200px;
+    /* Set maximum height for results */
+    overflow-y: auto;
+    /* Add scrollbar if results exceed maximum height */
 }
 
 #searchResults::-webkit-scrollbar {
-    width: 8px; /* width of the vertical scrollbar */
+    width: 8px;
+    /* width of the vertical scrollbar */
 }
 
 #searchResults::-webkit-scrollbar-thumb {
-    background-color: darkgrey; /* color of the scroll thumb */
-    border-radius: 10px; /* roundness of the scroll thumb */
-    border: 2px solid white; /* creates padding around the scroll thumb */
+    background-color: darkgrey;
+    /* color of the scroll thumb */
+    border-radius: 10px;
+    /* roundness of the scroll thumb */
+    border: 2px solid white;
+    /* creates padding around the scroll thumb */
 }
 
-#searchResults > div {
+#searchResults>div {
     padding: 10px;
     border-bottom: 1px solid #ccc;
     cursor: pointer;
 }
 
-#searchResults > div:last-child {
+#searchResults>div:last-child {
     border-bottom: none;
 }
 
 
+.stock_price {
+    display: flex;
+}
 
+.price_day_change {
+    display: flex;
+    justify-content: space-between;
+}
 
+.day_change{
+    font-size: 1.5rem;
+    margin: auto;
+}
+
+.scale{
+    display: flex;
+    justify-content: space-between;
+    width: 40%;
+    margin-top: auto;
+    position: relative;
+}
+
+.time{
+    width: 15%;
+    height: auto;
+    text-align: center;
+    border-radius: 2px;
+    background-color: #e8e8e8;
+}
 
 
 
@@ -282,14 +317,14 @@
     }
 
 
-    .search{
-           margin: 0 auto;
-           width: 70%; 
+    .search {
+        margin: 0 auto;
+        width: 70%;
     }
 
-    .button{
+    .button {
         margin: 0 auto;
-        width: 70%; 
+        width: 70%;
 
     }
 
@@ -318,9 +353,7 @@
         border: none;
     }
 
-    .stock_price{
-        
-    }
+
 
     .container-1,
     .container-2 {
@@ -333,7 +366,23 @@
         height: auto;
     }
 
-    .c-1-2{
+    .c-1-2 {
         margin-bottom: 10px;
+    }
+
+    .stock_price {
+        font-size: 1.7rem;
+    }
+
+    .day_change{
+        font-size: 1.2rem;
+    }
+
+    .scale{
+        width: 42%;
+    }
+
+    .time{
+        width: auto;
     }
 }

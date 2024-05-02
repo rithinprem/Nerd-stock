@@ -30,6 +30,8 @@ def block_user_agent():
         abort(403)
 
 json_object = None
+data = dict() #week_month_year_pentyear chart
+
 
 @app.route('/')
 def index():
@@ -109,6 +111,8 @@ def index():
 
 @app.route('/stock/<stock_id>')
 def stock_details(stock_id):
+    global data
+    data.clear()
     stock_id = int(stock_id)
     for stock in json_object:
         if stock['stock_id']==stock_id:
@@ -156,13 +160,18 @@ def stock_details(stock_id):
         stock_info_knowledge.append('')
 
     groww = GROWW(eq)         #object creation for GROWW for chart preparation
-    df = []
-    dfresult= groww.df()
-    df.append(dfresult)
+    df= groww.df()
+    data['daily'] = df
+    def target_function(groww):
+        global data
+        result = groww.df_week_month_year_pentyear()
+        data.update(result)
+
+    t = threading.Thread(target=target_function,args=[groww])
+    t.start()
     
 
     
-    df = df[0]
     stock_info = stock_info_knowledge[0]
     stock_knowledge = stock_info_knowledge[1]
     current_price = price_details[0]
@@ -215,6 +224,8 @@ def search():
 
 @app.route('/result/<result>')
 def result(result):
+        global data
+        data.clear()
         flag_nse = True
         price_details = []
         eq = result.split("|")[2]
@@ -243,13 +254,19 @@ def result(result):
 
         eq=(result.split('|')[2] if flag_nse else result.split('|')[1])
         groww = GROWW(eq)         #object creation for GROWW for chart preparation
-        df = []
-        dfresult= groww.df()
-        df.append(dfresult)
+        df= groww.df()
+
+        data['daily'] = df
+        def target_function(groww):
+            global data
+            result = groww.df_week_month_year_pentyear()
+            data.update(result)
+
+        t = threading.Thread(target=target_function,args=[groww])
+        t.start()
         
 
         
-        df = df[0]
         stock_info = stock_info_knowledge[0]
         stock_knowledge = stock_info_knowledge[1]
         current_price = price_details[0]
@@ -269,5 +286,29 @@ def result(result):
         return render_template('graph.html', graphHTML=graphHTML,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag)
 
     
+
+@app.route('/get-data', methods=['GET'])
+def get_data():
+    global data
+    # Get the 'timeframe' from the query string
+    timeframe = request.args.get('timeframe', 'default')  # Default value if 'timeframe' not provided
+    if timeframe == 'daily':
+        result = plot(data['daily'],1)
+    elif timeframe == 'weekly':
+        result = plot(data['weekly'],1)
+    elif timeframe == 'monthly':
+        result = plot(data['monthly'],1)
+    elif timeframe == '1y':
+        result = plot(data['1y'],1)
+    else:
+        result = plot(data['5y'],1)
+
+    # Return data as a simple response
+    return result
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
