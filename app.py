@@ -178,6 +178,8 @@ def stock_details(stock_id):
     previous_price = price_details[1]
     day_change = str(abs(round((current_price - previous_price)/previous_price*100,2)))+"%"
     flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
+    data['flag_daily'] = flag
+
 
     # print("Current price",current_price)
     # print("Previous price",previous_price)
@@ -273,6 +275,7 @@ def result(result):
         previous_price = price_details[1]
         day_change = str(abs(round((current_price - previous_price)/previous_price*100,2)))+"%"
         flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
+        data['flag_daily']=flag
 
         # print("Current price",current_price)
         # print("Previous price",previous_price)
@@ -293,15 +296,27 @@ def get_data():
     # Get the 'timeframe' from the query string
     timeframe = request.args.get('timeframe', 'default')  # Default value if 'timeframe' not provided
     if timeframe == 'daily':
-        result = plot(data['daily'],1)
+        result = plot(data['daily'],flag=data['flag_daily'])
     elif timeframe == 'weekly':
-        result = plot(data['weekly'],1)
+        df = data['weekly']
+        flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
+        print("Flag--------------------",flag)
+        print("Start Price-------------",df[0:1].Price.values[0])
+        print("End Price-------------",df.tail(1).Price.values[0])
+
+        result = plot(df,flag,timeframe)
     elif timeframe == 'monthly':
-        result = plot(data['monthly'],1)
+        df = data['monthly']
+        flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
+        result = plot(df,flag,timeframe)
     elif timeframe == '1y':
-        result = plot(data['1y'],1)
+        df = data['1y']
+        flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
+        result = plot(df,flag,timeframe)
     else:
-        result = plot(data['5y'],1)
+        df = data['5y']
+        flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
+        result = plot(df,flag,timeframe)
 
     # Return data as a simple response
     return result
@@ -311,4 +326,4 @@ def get_data():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,host='192.168.29.170')

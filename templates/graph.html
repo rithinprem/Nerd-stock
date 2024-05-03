@@ -126,7 +126,7 @@
     </div>
 
 
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
     <script>
 
         document.getElementById('stock-search').addEventListener('input', function () {
@@ -181,14 +181,17 @@
             fetch('/get-data?timeframe=' + encodeURIComponent(timeframe))
                 .then(response => response.text())  // Handle response as plain text
                 .then(graph => {
-                    var graph = JSON.parse(graph);;
-                    Plotly.newPlot("chart_result", graph);
+                    var graph = JSON.parse(graph);
+                    Plotly.newPlot("chart_result", graph, {});
                 })
                 .catch(error => console.error('Error:', error));
         }
 
         var graph = {{ graphHTML| safe}};
-        Plotly.plot("chart_result", graph)
+        Plotly.newPlot("chart_result", graph, {});
+
+
+
 
     </script>
 
