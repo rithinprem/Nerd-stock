@@ -283,7 +283,9 @@ html,body{
     background-color: #e8e8e8;
 }
 
-
+*{
+    -webkit-tap-highlight-color: transparent;
+}
 
 /* CSS specific to screen sizes greater than 600px (adjust as needed) */
 @media only screen and (min-width: 600px) {

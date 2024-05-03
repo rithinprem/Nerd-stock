@@ -53,7 +53,7 @@ def plot(df, flag,time="daily"):
         hoverlabel=dict(bgcolor='white',
                         font_family="GrowwSans, NotoSans, system-ui",
                         font_color='black',
-                        bordercolor='rgb(255,255,255,0)',
+                        bordercolor='#92827F',
                         namelength=-1,  # Prevent name truncation
                         align='left',  # Align label to the left
                         ),
