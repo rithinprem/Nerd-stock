@@ -8,7 +8,8 @@
     vertical-align: baseline;
 }
 
-html,body{
+html,
+body {
     overflow-x: hidden;
 }
 
@@ -262,12 +263,12 @@ html,body{
     justify-content: space-between;
 }
 
-.day_change{
+.day_change {
     font-size: 1.5rem;
     margin: auto;
 }
 
-.scale{
+.scale {
     display: flex;
     justify-content: space-around;
     width: 40%;
@@ -275,15 +276,23 @@ html,body{
     position: relative;
 }
 
-.time{
+.time {
     width: 15%;
     height: auto;
     text-align: center;
     border-radius: 2px;
-    background-color: #e8e8e8;
 }
 
-*{
+.timeframe-button {
+    width: 25px;
+    background-color: #44475b;
+    color: white;
+    border-radius: 5px;
+    border: 2px solid white;
+}
+
+
+* {
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -378,19 +387,20 @@ html,body{
         margin-left: 3%;
     }
 
-    .day_change{
+    .day_change {
         font-size: 1.2rem;
+        margin-bottom: 25px;
     }
 
-    .scale{
+    .scale {
         width: 42%;
+        margin-top: 25px;
     }
 
-    .time{
-        width: auto;
+    .time {
     }
 
-    #chart_result{
+    #chart_result {
         height: 60vh;
         width: 100%;
         margin: 0 auto;

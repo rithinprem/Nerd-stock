@@ -24,6 +24,7 @@ def plot(df, flag,time="daily"):
         plot_bgcolor='white',  # Clean background
         xaxis=dict(spikecolor="#8f919d",
                    showline=True,
+                   automargin=True,
                    showgrid=True,
                    showticklabels=True,
                    linecolor='#8f919d',  # Adds line bordering the x-axis
@@ -67,8 +68,6 @@ def plot(df, flag,time="daily"):
     fig.update_yaxes(spikemode="across", spikethickness=0.5,spikecolor='grey')
     fig.update_traces(hovertemplate=hover_template,
                       line_color=('#eb5b3c' if flag == -1 else '#00b386'),  # Set line color
-                    #   fill='tozeroy',  # Fill area under the curve
-                    #   fillcolor=('rgba(255,0,0,0.3)' if flag == -1 else 'rgba(0,179,134,0.3)'),  # Set fill color
                       )
 
     fig.layout.xaxis.fixedrange = True
