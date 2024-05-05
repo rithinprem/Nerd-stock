@@ -1,14 +1,9 @@
 from flask import Flask, render_template,request,Response,abort
-import plotly.express as px   #for plotting
-import plotly.io as pio
-import numpy as np
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 import json
-import logging              #for logging
 import concurrent.futures   #multithreading
-import time
 import threading
 import re
 
@@ -17,6 +12,7 @@ import re
 from GROWW import GROWW
 from GOOGLEFIN import GOOGLEFIN
 from graph import plot
+from view_chart import view_chart_api
 
 
 
@@ -29,9 +25,9 @@ def block_user_agent():
     if user_agent in blocked_user_agents:
         abort(403)
 
-json_object = None
-data = dict() #week_month_year_pentyear chart
-
+json_object = None #for search when user clicks view stock 
+data = dict() #for week_month_year_pentyear chart --threading
+script_code = dict()
 
 @app.route('/')
 def index():
@@ -111,7 +107,10 @@ def index():
 
 @app.route('/stock/<stock_id>')
 def stock_details(stock_id):
+    global script_code
     global data
+    global script_code
+    script_code.clear()
     data.clear()
     stock_id = int(stock_id)
     for stock in json_object:
@@ -134,16 +133,21 @@ def stock_details(stock_id):
     eq = e[0]   #eq = equity
 
     price_details = []
-
-    if eq.isnumeric() is False:   #NSE stock
-        price_details = []
+    if eq.isnumeric() is False:
         o = GOOGLEFIN(f'{eq}:NSE')
         stock_info_knowledge=[]
         stock_info,stock_knowledge,current_price = o.stockinfo()
         price_details.append(current_price)
-    else:                        #BSE stock
+        if not stock_info:
+            print("BSE stock",e)
+            eq = e[1].split(':')[1]
+            price_details = []
+            o = GOOGLEFIN(f'{eq}:BOM')
+            stock_info_knowledge=[]
+            stock_info,stock_knowledge,current_price = o.stockinfo()
+            price_details.append(current_price)
+    else:
         price_details = []
-        flag_nse = False
         o = GOOGLEFIN(f'{eq}:BOM')
         stock_info_knowledge=[]
         stock_info,stock_knowledge,current_price = o.stockinfo()
@@ -159,6 +163,11 @@ def stock_details(stock_id):
     else:
         stock_info_knowledge.append('')
 
+    if eq.isnumeric():        #BSE
+        script_code['BSE']=eq
+    else:                     #NSE
+        script_code['NSE']=eq
+
     groww = GROWW(eq)         #object creation for GROWW for chart preparation
     df= groww.df()
     data['daily'] = df
@@ -169,7 +178,8 @@ def stock_details(stock_id):
 
     t = threading.Thread(target=target_function,args=[groww])
     t.start()
-    
+    t.join()
+    print(data)
 
     
     stock_info = stock_info_knowledge[0]
@@ -179,7 +189,7 @@ def stock_details(stock_id):
     day_change = str(abs(round((current_price - previous_price)/previous_price*100,2)))+"%"
     flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
     data['flag_daily'] = flag
-
+    script_code["stock_name"] = stock_name
 
     # print("Current price",current_price)
     # print("Previous price",previous_price)
@@ -189,7 +199,7 @@ def stock_details(stock_id):
 
     graphHTML =  plot(df,flag)   #plot using plotly
 
-    return render_template('graph.html', graphHTML=graphHTML,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag)
+    return render_template('graph.html', graphHTML=graphHTML,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag,script_code=script_code)
 
 
 
@@ -227,6 +237,8 @@ def search():
 @app.route('/result/<result>')
 def result(result):
         global data
+        global script_code
+        script_code.clear()
         data.clear()
         flag_nse = True
         price_details = []
@@ -255,6 +267,12 @@ def result(result):
             stock_info_knowledge.append('')
 
         eq=(result.split('|')[2] if flag_nse else result.split('|')[1])
+
+        if eq.isnumeric():        #BSE
+            script_code['BSE']=eq
+        else:                     #NSE
+            script_code['NSE']=eq
+
         groww = GROWW(eq)         #object creation for GROWW for chart preparation
         df= groww.df()
 
@@ -283,10 +301,12 @@ def result(result):
         # print(stock_knowledge)
 
         stock_name = result.split("|")[0]
+        script_code["stock_name"] = stock_name
+
 
         graphHTML =  plot(df,flag)   #plot using plotly
 
-        return render_template('graph.html', graphHTML=graphHTML,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag)
+        return render_template('graph.html', graphHTML=graphHTML,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag,script_code=script_code)
 
     
 
@@ -322,7 +342,12 @@ def get_data():
     return result
 
 
-
+@app.route("/view_chart/<scriptcode>")
+def view_chart(scriptcode):
+    global script_code
+    stock_name = script_code["stock_name"]
+    response = view_chart_api(scriptcode)
+    return render_template('view_chart.html',view_chart_api_result = response,stock_name=stock_name)
 
 
 if __name__ == '__main__':

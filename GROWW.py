@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import json
 import requests
 from pytz import timezone
 
@@ -40,7 +39,6 @@ class GROWW:
             f"https://groww.in/v1/api/charting_service/v2/chart/delayed/exchange/NSE/segment/CASH/{self.eq}/5y?intervalInDays=5&minimal=true"]
 
         chart = dict()
-
         if self.eq.isnumeric() is False:
             for url in urls:
                 data=requests.get(url,headers=self.headers)
@@ -58,7 +56,7 @@ class GROWW:
                 data = data.json()['candles']
                 df = pd.DataFrame(data,columns=['Timestamp','Price'])
                 df.Timestamp = pd.to_datetime([entry[0] for entry in data], unit='s', utc=True).tz_convert('Asia/Kolkata')
-                time = url.split('{self.eq}/')[1].split('?')[0]
+                time = url.split(f'{self.eq}/')[1].split('?')[0]
                 chart[time] = df
         
         return chart

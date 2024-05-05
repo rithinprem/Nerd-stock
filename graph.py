@@ -17,7 +17,7 @@ def plot(df, flag,time="daily"):
                   )
 
     fig.update_layout( 
-        margin=dict(l=0, r=15, b=0, t=110),
+        margin=dict(l=0, r=10, b=0, t=110),
         xaxis_showticklabels=False,
         yaxis_showticklabels=False,
         dragmode = False,

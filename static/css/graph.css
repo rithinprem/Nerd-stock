@@ -296,6 +296,22 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
+
+
+.view_chart{
+    margin-left: auto;
+    margin-top: 5px;
+}
+
+.view_chart button{
+    border: 2px solid;
+    padding: 4px;
+    border-radius: 5px;
+    background-color: #44475b;
+    color: white;
+}
+
+
 /* CSS specific to screen sizes greater than 600px (adjust as needed) */
 @media only screen and (min-width: 600px) {
     /* Add your desktop-specific styles here */

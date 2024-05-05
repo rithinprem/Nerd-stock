@@ -1,0 +1,65 @@
+.bottom_buttons{
+    height: 7vh;
+    width: 100%;
+    align-content: center;
+    transition-duration: 0.5s;
+
+}
+
+
+body{
+    background-color: #f1f4f1;
+}
+
+#chart{
+    margin-top: 4px;
+}
+
+.bottom_bar{
+    background-color: white;
+    border: 1px solid #e0d5d5;
+    display: flex;
+    width: 100%;
+    margin-top: 1px;
+    margin-top: 8px;
+    border-radius: 3px;
+}
+
+.bottom_bar button{
+    padding: 6px;
+    border: none;
+    background-color: white;
+    height: 90%;
+
+}   
+
+.bottom_bar button:hover {
+    background-color: #f1eded; /* Darker green */
+}
+
+#timeDisplay{
+    align-content: center;
+    margin-right: 1%;
+    font-family:  GrowwSans, NotoSans, system-ui;
+}
+
+#stockName{
+    height: 8vh;
+    background-color: white;
+    border: 1px solid #e0d5d5;
+    align-content: center;
+    padding-left: 10px;
+    border-radius: 3px;
+    font-family: -apple-system, BlinkMacSystemFont, Trebuchet MS, Roboto, Ubuntu, sans-serif;
+}
+
+@media only screen and (max-width: 405px){
+    .bottom_bar button{
+        padding: 1px;
+    }
+
+    #timeDisplay{
+        font-size: 13px;
+    }
+
+}
