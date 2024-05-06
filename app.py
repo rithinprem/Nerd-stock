@@ -8,6 +8,7 @@ import threading
 import re
 
 
+
 #internal imports
 from GROWW import GROWW
 from GOOGLEFIN import GOOGLEFIN
@@ -18,6 +19,7 @@ from view_chart import view_chart_api
 
 app = Flask(__name__)
 blocked_user_agents = ["Go-http-client/1.1"]
+
 
 @app.before_request
 def block_user_agent():
@@ -179,7 +181,6 @@ def stock_details(stock_id):
     t = threading.Thread(target=target_function,args=[groww])
     t.start()
     t.join()
-    print(data)
 
     
     stock_info = stock_info_knowledge[0]

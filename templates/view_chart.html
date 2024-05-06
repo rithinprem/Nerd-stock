@@ -13,6 +13,7 @@
                 }
         </style>
         <link rel="stylesheet" href="../static/css/view_chart.css">
+        <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 
 <body>
@@ -34,7 +35,7 @@
                 <div id="timeDisplay"></div>
         </div>
 
-        <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+        
         <script>
                 const properties = {
                         layout: {
@@ -49,7 +50,6 @@
                                         color: '#bbd9fb',
                                 },
                         },
-                        title: 'Stock Name',
                         timeScale: {
                                 timeVisible: true,
                                 secondsVisible: false,
@@ -65,7 +65,9 @@
                 const dom = document.getElementById('chart');
                 const chart = LightweightCharts.createChart(dom, properties);
                 const candlestickSeries = chart.addCandlestickSeries();
-                const data = {{ view_chart_api_result | tojson | safe }};
+                const data = {{ view_chart_api_result |safe }};
+                console.log(data);
+
                 candlestickSeries.setData(data);
 
                 // Ensure the chart resizes dynamically with the window
