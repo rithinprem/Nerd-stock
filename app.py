@@ -141,7 +141,6 @@ def stock_details(stock_id):
         stock_info,stock_knowledge,current_price = o.stockinfo()
         price_details.append(current_price)
         if not stock_info:
-            print("BSE stock",e)
             eq = e[1].split(':')[1]
             price_details = []
             o = GOOGLEFIN(f'{eq}:BOM')
@@ -192,15 +191,16 @@ def stock_details(stock_id):
     data['flag_daily'] = flag
     script_code["stock_name"] = stock_name
 
-    # print("Current price",current_price)
-    # print("Previous price",previous_price)
-    # print("Day change",day_change)
-    # print(stock_knowledge)
 
+    df.columns = ['time','value']
+    df.time = pd.to_datetime(df.time).astype('int64') // 10**9  #epoch
+    df['time'] = df.time + 19800   #IST time
+    graphdata = df.to_dict('records')
+    graphdata = json.dumps(graphdata)
 
-    graphHTML =  plot(df,flag)   #plot using plotly
+    # graphHTML =  plot(df,flag)   #plot using plotly
 
-    return render_template('graph.html', graphHTML=graphHTML,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag,script_code=script_code)
+    return render_template('graph.html', graphdata=graphdata,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag,script_code=script_code)
 
 
 
@@ -285,6 +285,7 @@ def result(result):
 
         t = threading.Thread(target=target_function,args=[groww])
         t.start()
+        t.join()
         
 
         
@@ -296,18 +297,18 @@ def result(result):
         flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
         data['flag_daily']=flag
 
-        # print("Current price",current_price)
-        # print("Previous price",previous_price)
-        # print("Day change",day_change)
-        # print(stock_knowledge)
-
         stock_name = result.split("|")[0]
         script_code["stock_name"] = stock_name
 
 
-        graphHTML =  plot(df,flag)   #plot using plotly
+        df.columns = ['time','value']
+        df.time = pd.to_datetime(df.time).astype('int64') // 10**9  #epoch
+        df['time'] = df.time + 19800   #IST time
+        graphdata = df.to_dict('records')
+        graphdata = json.dumps(graphdata)
+        # graphHTML =  plot(df,flag)   #plot using plotly
 
-        return render_template('graph.html', graphHTML=graphHTML,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag,script_code=script_code)
+        return render_template('graph.html', graphdata=graphdata,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag,script_code=script_code)
 
     
 
@@ -317,30 +318,65 @@ def get_data():
     # Get the 'timeframe' from the query string
     timeframe = request.args.get('timeframe', 'default')  # Default value if 'timeframe' not provided
     if timeframe == 'daily':
-        result = plot(data['daily'],flag=data['flag_daily'])
+        df = data['daily'].copy()
+        flag=data['flag_daily']
+        df.columns = ['time','value']
+        graphdata = df.to_dict('records')
+        graphdata = json.dumps(graphdata)
+        result = graphdata
+        del df
+
     elif timeframe == 'weekly':
-        df = data['weekly']
+        df = data['weekly'].copy()
         flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
-        print("Flag--------------------",flag)
-        print("Start Price-------------",df[0:1].Price.values[0])
-        print("End Price-------------",df.tail(1).Price.values[0])
+        df.columns = ['time','value']
+        df.time = pd.to_datetime(df.time).astype('int64') // 10**9  #epoch
+        df['time'] = df.time + 19800   #IST time
+        graphdata = df.to_dict('records')
+        graphdata = json.dumps(graphdata)
+        result = graphdata 
+        del df 
 
-        result = plot(df,flag,timeframe)
     elif timeframe == 'monthly':
-        df = data['monthly']
+        df = data['monthly'].copy()
         flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
-        result = plot(df,flag,timeframe)
-    elif timeframe == '1y':
-        df = data['1y']
-        flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
-        result = plot(df,flag,timeframe)
-    else:
-        df = data['5y']
-        flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
-        result = plot(df,flag,timeframe)
+        df.columns = ['time','value']
+        df.time = pd.to_datetime(df.time).astype('int64') // 10**9  #epoch
+        df['time'] = df.time + 19800   #IST time
+        graphdata = df.to_dict('records')
+        graphdata = json.dumps(graphdata)
+        result = graphdata 
+        del df
 
-    # Return data as a simple response
-    return result
+    elif timeframe == '1y':
+        df = data['1y'].copy()
+        flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
+        df.columns = ['time','value']
+        df.time = pd.to_datetime(df.time).astype('int64') // 10**9  #epoch
+        df['time'] = df.time + 19800   #IST time
+        graphdata = df.to_dict('records')
+        graphdata = json.dumps(graphdata)
+        result = graphdata 
+        del df
+
+    else:
+        df = data['5y'].copy()
+        flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
+        df.columns = ['time','value']
+        df.time = pd.to_datetime(df.time).astype('int64') // 10**9  #epoch
+        df['time'] = df.time + 19800   #IST time
+        graphdata = df.to_dict('records')
+        graphdata = json.dumps(graphdata)
+        result = graphdata 
+        del df
+
+
+    response = dict()
+    response['graph'] = result
+    response['flag'] = flag
+    response = json.dumps(response)
+
+    return response
 
 
 @app.route("/view_chart/<scriptcode>")
@@ -348,8 +384,16 @@ def view_chart(scriptcode):
     global script_code
     stock_name = script_code["stock_name"]
     response = view_chart_api(scriptcode)
-    return render_template('view_chart.html',view_chart_api_result = response,stock_name=stock_name)
+    return render_template('view_chart.html',view_chart_api_result = response,stock_name=stock_name,script_code=script_code)
 
+@app.route("/chart_timeframe")
+def chart_time():
+    timeframe = request.args.get('timeframe', '')
+    script_code = request.args.get('script_code', '')
+    stock_name = request.args.get('stockname', '')
+    print(timeframe,script_code,stock_name)
+    response = view_chart_api(script_code,timeframe)
+    return response
 
 if __name__ == '__main__':
     app.run(debug=True,host='192.168.29.170')

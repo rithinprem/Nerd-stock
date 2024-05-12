@@ -9,7 +9,18 @@
                 #chart {
                         width: 100%;
                         height: 79vh;
-                        /* Adjust height based on view height */
+                }
+
+                @media only screen and (max-width: 405px) {
+                        #chart {
+                                width: 100%;
+                                height: 72vh;
+                                /* Adjust height based on view height */
+                        }
+
+                        .stockName {
+                                align-content: center;
+                        }
                 }
         </style>
         <link rel="stylesheet" href="../static/css/view_chart.css">
@@ -18,24 +29,22 @@
 
 <body>
 
-
         <div id="chartContainer">
                 <div id="stockName">{{stock_name}}</div>
                 <div id="chart"></div>
         </div>
         <div class="bottom_bar">
                 <div class="bottom_buttons">
-                        <button type="button" class="button" style="margin-left: 1%;">5y</button>
-                        <button type="button" class="button">1y</button>
-                        <button type="button" class="button">3m</button>
-                        <button type="button" class="button">1m</button>
-                        <button type="button" class="button">5d</button>
-                        <button type="button" class="button">1d</button>
+                        <button type="button" class="button" style="margin-left: 1%;" value="5y">5y</button>
+                        <button type="button" class="button" value="1y">1y</button>
+                        <button type="button" class="button" value="3m">3m</button>
+                        <button type="button" class="button" value="1m">1m</button>
+                        <button type="button" class="button" value="5d">5d</button>
+                        <button type="button" class="button" value="1d">1d</button>
                 </div>
                 <div id="timeDisplay"></div>
         </div>
 
-        
         <script>
                 const properties = {
                         layout: {
@@ -55,20 +64,72 @@
                                 secondsVisible: false,
                                 borderColor: 'transparent',
                         },
-                        rightPriceScale: { // Ensure you target the correct price scale (left or right as configured)
-                                borderColor: 'transparent', // Making the border of the price scale transparent
-                                drawTicks: false, // Optional: Do not draw tick marks
+                        rightPriceScale: {
+                                borderColor: 'transparent',
+                                drawTicks: false,
                         },
-
                 };
 
                 const dom = document.getElementById('chart');
                 const chart = LightweightCharts.createChart(dom, properties);
                 const candlestickSeries = chart.addCandlestickSeries();
-                const data = {{ view_chart_api_result |safe }};
-                console.log(data);
 
-                candlestickSeries.setData(data);
+                console.log({{ script_code| safe}});
+
+                const cache = {};
+                function fetchData(timeframe) {
+                        let exchng = '';
+                        script_code = {{script_code | safe}};
+
+                        if ('NSE' in script_code) {
+                                exchng = script_code['NSE'];
+                        } else if ('BSE' in script_code) {
+                                exchng = script_code['BSE'];
+                        }
+                        const stockname = '{{stock_name}}';
+                        const cacheKey = `${timeframe}_${exchng}`;
+
+                        // Check if data for this timeframe and exchange is already in cache
+                        if (cache[cacheKey]) {
+                                console.log('Using cached data');
+                                candlestickSeries.setData(cache[cacheKey]);
+                                return;  // Use cached data and return early
+                        }
+
+
+                        const url = '/chart_timeframe?timeframe=' + encodeURIComponent(timeframe) + '&script_code=' + encodeURIComponent(exchng) +'&stockname=' + encodeURIComponent(stockname);
+                        
+                        fetch(url)
+                                .then(response => response.json())
+                                .then(data => {
+                                // Update the chart with the new data
+                                candlestickSeries.setData(data);
+
+                                cache[cacheKey] = data;
+                                })
+                                
+                        };
+
+
+                // Fetch default data when the page loads
+                window.onload = function () {
+                        data = {{ view_chart_api_result | safe }};
+                candlestickSeries.setData(data)} // Fetch data for default time frame (5 years)
+
+
+                // Event listener for button clicks
+                document.querySelectorAll('.button').forEach(button => {
+                        button.onclick = function () {
+                                // Change background color of clicked button
+                                document.querySelectorAll('.button').forEach(btn => {
+                                        btn.style.backgroundColor = ''; // Reset to default (empty string)
+                                });
+                                this.style.backgroundColor = 'grey';
+
+                                // Fetch data for the selected time frame
+                                fetchData(this.value);
+                        };
+                });
 
                 // Ensure the chart resizes dynamically with the window
                 function resizeChart() {
@@ -80,27 +141,15 @@
 
                 function updateTime() {
                         var currentTime = new Date();
-
-                        // Get the local timezone offset in minutes
                         var timezoneOffsetMinutes = currentTime.getTimezoneOffset();
-
-                        // Convert the offset to milliseconds and subtract from the current time
                         var timezoneOffsetMilliseconds = timezoneOffsetMinutes * 60 * 1000;
                         currentTime.setTime(currentTime.getTime() + timezoneOffsetMilliseconds);
-
-                        // Add 5 hours and 30 minutes to convert to Indian Standard Time (IST)
                         currentTime.setHours(currentTime.getHours() + 5);
                         currentTime.setMinutes(currentTime.getMinutes() + 30);
-
-                        // Extract hours, minutes, and seconds
                         var istHours = currentTime.getHours();
                         var istMinutes = currentTime.getMinutes();
                         var istSeconds = currentTime.getSeconds();
-
-                        // Format IST time nicely
                         var formattedIstTime = istHours + ":" + (istMinutes < 10 ? "0" : "") + istMinutes + ":" + (istSeconds < 10 ? "0" : "") + istSeconds;
-
-                        // Set the time display content
                         document.getElementById('timeDisplay').innerText = formattedIstTime + "(UTC+5:30)";
                 }
 
@@ -108,6 +157,7 @@
                 updateTime();
                 setInterval(updateTime, 1000);
         </script>
+
 </body>
 
 </html>

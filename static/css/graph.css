@@ -4,7 +4,7 @@
     border: 0;
     font-size: 100%;
     font: inherit;
-    font-family: monospace;
+    font-family: GrowwSans,NotoSans,system-ui;
     vertical-align: baseline;
 }
 
@@ -72,6 +72,14 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+#chart_result {
+    height: 60vh;
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid #ebdbdb;
+    border-radius: 10px;
 }
 
 
@@ -417,7 +425,7 @@ body {
     }
 
     #chart_result {
-        height: 60vh;
+        height: 50vh;
         width: 100%;
         margin: 0 auto;
     }

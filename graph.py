@@ -5,6 +5,8 @@ import json
 import plotly
 
 def plot(df, flag,time="daily"):
+
+    print(df)
     
     fig = px.line(df,
                   x='Timestamp',
