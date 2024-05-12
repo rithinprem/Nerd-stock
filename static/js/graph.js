@@ -53,12 +53,14 @@ document.addEventListener('DOMContentLoaded', function () {
             borderColor: 'transparent',
         },
         rightPriceScale: {
-            visible: false
+            visible: false,
+            drawTicks: false,
         },
         leftPriceScale: {
             visible: true,
             borderColor: 'transparent',
             drawTicks: false,
+            
         },
         handleScroll: {
             mouseWheel: false,
@@ -71,6 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
             mouseWheel: false,
             pinch: false,
         },
+        
+
+        
     };
 
     // Create a new chart
@@ -99,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
             horzLine: {
                 visible: false, // Make the horizontal line invisible
             },
+            
         },
     });
 
@@ -116,6 +122,24 @@ document.addEventListener('DOMContentLoaded', function () {
     resizeChart(); // Initial sizing
     // Ensure that the chart covers the full range of the data
 
+    document.getElementById('chart_result').addEventListener('touchmove', e => {
+        const bcr = document.getElementById('chart_result').getBoundingClientRect();
+        const x = bcr.left + e.touches[0].clientX;
+        const y = bcr.top + e.touches[0].clientY;
+    
+        const price = lineSeries.coordinateToPrice(y);
+        const time = chart.timeScale().coordinateToTime(x);
+    
+        if (!Number.isFinite(price) || !Number.isFinite(time)) {
+            return;
+        }
+    
+        chart.setCrosshairPosition(price, time, lineSeries);
+    });
+    
+    document.getElementById('chart_result').addEventListener('touchend', () => {
+        chart.clearCrosshairPosition();
+    });
     
 
     

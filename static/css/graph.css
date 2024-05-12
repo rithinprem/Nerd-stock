@@ -6,6 +6,7 @@
     font: inherit;
     font-family: GrowwSans,NotoSans,system-ui;
     vertical-align: baseline;
+    font-size: 14px;
 }
 
 html,
@@ -272,8 +273,8 @@ body {
 }
 
 .day_change {
-    font-size: 1.5rem;
-    margin: auto;
+    padding: 2px;
+
 }
 
 .scale {
@@ -297,6 +298,7 @@ body {
     color: white;
     border-radius: 5px;
     border: 2px solid white;
+    font-size: 12px;
 }
 
 
@@ -309,6 +311,7 @@ body {
 .view_chart{
     margin-left: auto;
     margin-top: 5px;
+    font-size: 12px;
 }
 
 .view_chart button{
@@ -412,9 +415,10 @@ body {
     }
 
     .day_change {
-        font-size: 1.2rem;
-        margin-bottom: 25px;
+        font-size: 1rem;
+        margin-top: 0;
     }
+    
 
     .scale {
         width: 42%;
@@ -426,7 +430,16 @@ body {
 
     #chart_result {
         height: 50vh;
-        width: 100%;
+        width: 95%;
         margin: 0 auto;
+    }
+
+    .timeframe-button {
+        font-size: 10px;
+    }
+
+    .view_chart button{
+        font-size: 10px;
+        margin-right: 7px;
     }
 }
