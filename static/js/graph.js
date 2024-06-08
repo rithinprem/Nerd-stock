@@ -2,23 +2,68 @@ var lineSeries;
 var colour;
 var chart;
 
-function updateChartWithData(newData,flag) {
+
+function formatDate(date, timeframe='daily') {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
+    const year = date.getFullYear();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    let period = 'AM';
+    let adjustedHours = hours;
+    if (adjustedHours >= 12) {
+        period = 'PM';
+        if (adjustedHours > 12) {
+            adjustedHours -= 12;
+        }
+    } else if (adjustedHours === 0) {
+        adjustedHours = 12; // Midnight is 12 AM
+    }
+
+    const timeStr = `${adjustedHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`;
+    const weekmonSTr = timeStr+','+ `${day} ${month}`;
+    const dateStr = `${day} ${month} ${year}`;
+
+    // Adjust the format based on the timeframe
+    switch (timeframe) {
+        case 'daily':
+            return `${timeStr}`; // Show only date for daily charts
+
+        case 'weekly':
+            return `${weekmonSTr}`;
+
+        case 'monthly':
+            return `${weekmonSTr}`; // Show date and time without seconds for hourly charts
+
+        case '1y':
+            return `${dateStr}`;
+
+        case '5y':
+            return `${dateStr}`;
+
+        default:
+            return `${dateStr}, ${timeStr}`; // Default case
+    }
+}
+
+
+function updateChartWithData(newData, flag, time_frame='daily') {
 
     let firstDataTime = newData[0].time;
     let lastDataTime = newData[newData.length - 1].time;
     const dom = document.getElementById('chart_result');
-
-    // console.log("Updating chart with new data:", newData);
 
     if (flag == -1) { colour = '#cd2323' }
     else { colour = '#00b386' }
     if (lineSeries) {
         chart.removeSeries(lineSeries);
     }
-    lineSeries = chart.addLineSeries({ color: colour,lineWidth: 1.8});
+    lineSeries = chart.addLineSeries({ color: colour, lineWidth: 1.8, crossHairMarkerVisible: false });
     lineSeries.setData(newData);
 
-    
+
     // Set the visible range for the time scale
     chart.timeScale().setVisibleRange({ from: firstDataTime, to: lastDataTime });
     function resizeChart() {
@@ -34,10 +79,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const dom = document.getElementById('chart_result');
 
     // Chart properties
-    let  properties = {
+    let properties = {
         layout: {
             backgroundColor: '#000000',
-            textColor: '#131722',
+            textColor: '#949494',
         },
         grid: {
             vertLines: {
@@ -60,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
             visible: true,
             borderColor: 'transparent',
             drawTicks: false,
-            
+
         },
         handleScroll: {
             mouseWheel: false,
@@ -73,40 +118,97 @@ document.addEventListener('DOMContentLoaded', function () {
             mouseWheel: false,
             pinch: false,
         },
-        
 
-        
+
+
     };
 
     // Create a new chart
     chart = LightweightCharts.createChart(dom, properties);
     if (flag == -1) { colour = '#cd2323' }
     else { colour = '#00b386' }
-    // Add a line series to the chart
-    lineSeries = chart.addLineSeries({ color: colour,lineWidth: 1.8});
 
-    
-
-    // Add data to the line series
-    lineSeries.setData(graphdata);
 
     // Customize crosshair
     chart.applyOptions({
         crosshair: {
-            
+
             vertLine: {
-                color: 'rgba(0, 0, 0, 0.5)', // Color of the vertical line
-                width: 2, // Width of the vertical line
-                style: 1, // Style of the vertical line (1: solid)
-                visible: true, // Make the vertical line visible
-                labelVisible: true, // Show value label on hover
+                labelVisible: false,
             },
             horzLine: {
                 visible: false, // Make the horizontal line invisible
+                labelVisible: false,
             },
-            
+
         },
     });
+
+    // Add a line series to the chart
+    lineSeries = chart.addLineSeries({ color: colour, lineWidth: 1.8, crossHairMarkerVisible: false });
+
+
+    // Add data to the line series
+    lineSeries.setData(graphdata);
+
+
+
+    const chart_result = document.getElementById('chart_result');
+
+    // Create and style the tooltip html element
+    const toolTip = document.getElementById('tooltip');
+
+    // Update tooltip on crosshair move
+    function updateTooltip(param) {
+        if (
+            param.point === undefined ||
+            !param.time ||
+            param.point.x < 0 ||
+            param.point.x > chart_result.clientWidth ||
+            param.point.y < 0 ||
+            param.point.y > chart_result.clientHeight
+        ) {
+            toolTip.style.display = 'none';
+            return;
+        }
+        const date = new Date((param.time - 19800) * 1000); // IST
+        const tooltipContent = formatDate(date, time_frame);
+        toolTip.style.display = 'block';
+        const data = param.seriesData.get(lineSeries);
+        const price = data.value !== undefined ? data.value : data.close;
+        toolTip.innerHTML = `<div style="display: flex; flex-direction: row; align-items: center;"> <div>₹${Math.round(100 * price) / 100}|</div><div>${tooltipContent}</div></div>`;
+
+        const toolTipWidth = toolTip.offsetWidth;
+        const chartRect = chart_result.getBoundingClientRect();
+        let leftPos = param.point.x;
+
+        if (chart_result.clientWidth > 569) {
+            if (leftPos >= toolTipWidth / 2 && leftPos < chartRect.right) {
+                leftPos = leftPos + 50;
+            }
+
+            if (leftPos < chartRect.left) {
+                leftPos = chartRect.left;
+            }
+            if (leftPos + toolTipWidth > chartRect.right) {
+                leftPos = chartRect.right - toolTipWidth;
+            }
+        } else {
+            if (leftPos >= toolTipWidth / 2 && leftPos < chartRect.right - 100) {
+                leftPos = leftPos - 50;
+            } else {
+                if (leftPos >= chartRect.right - 100) {
+                    leftPos = chartRect.right - toolTipWidth;
+                }
+            }
+        }
+
+        toolTip.style.left = `${leftPos}px`;
+        toolTip.style.top = toolTip.offsetHeight + 'px';
+        chart.timeScale().fitContent();
+    }
+
+    chart.subscribeCrosshairMove(updateTooltip);
 
 
     const firstDataTime = graphdata[0].time;
@@ -122,26 +224,12 @@ document.addEventListener('DOMContentLoaded', function () {
     resizeChart(); // Initial sizing
     // Ensure that the chart covers the full range of the data
 
-    document.getElementById('chart_result').addEventListener('touchmove', e => {
-        const bcr = document.getElementById('chart_result').getBoundingClientRect();
-        const x = bcr.left + e.touches[0].clientX;
-        const y = bcr.top + e.touches[0].clientY;
     
-        const price = lineSeries.coordinateToPrice(y);
-        const time = chart.timeScale().coordinateToTime(x);
-    
-        if (!Number.isFinite(price) || !Number.isFinite(time)) {
-            return;
-        }
-    
-        chart.setCrosshairPosition(price, time, lineSeries);
-    });
-    
+   
+
     document.getElementById('chart_result').addEventListener('touchend', () => {
         chart.clearCrosshairPosition();
+        toolTip.innerHTML = `<div></div>`;
     });
-    
-
-    
 });
 

@@ -70,8 +70,10 @@
 
                 </div>
                 <div id="chart_result"></div>
+                <div id="tooltip"></div>
                 <script> var stock_name = "{{ stock_name }}";
                          var graphdata = JSON.parse('{{graphdata | safe}}');
+                         var time_frame = "daily"
                          var flag = "{{flag}}"; </script>
                 <script src="../static/js/graph.js"></script>
                 <script>
@@ -94,14 +96,16 @@
                         fetch('/get-data?timeframe=' + encodeURIComponent(timeframe))
                             .then(response => response.text())  // Handle response as plain text
                             .then(result => {
+                                console.log(result)
                                 let Data = JSON.parse(result);
-                                updateChartWithData(JSON.parse(Data['graph']),flag=Data['flag']);
+                                console.log(Data)
+                                updateChartWithData(JSON.parse(Data['graph']),flag=Data['flag'],time_frame=Data['timeframe']);
                             })
                             .catch(error => console.error('Error:', error));
                     }
                 </script>
 
-
+                <div style="color: #ada6a6;font-style: italic;">Long press to hover price and time of share</div>
                 <div class="view_chart"><button type="button" id="view_chart">view chart</h>
                 </div>
                 <div class="c-1-2">

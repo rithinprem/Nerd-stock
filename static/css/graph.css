@@ -81,8 +81,28 @@ body {
     margin: 0 auto;
     border: 1px solid #ebdbdb;
     border-radius: 10px;
+    position: relative;
 }
 
+#tooltip {
+    /* width: 150px; */
+    height: 40%;
+    position: absolute;
+    display: none;
+    padding: 2px;
+    font-weight: bold;
+    box-sizing: border-box;
+    text-align: left;
+    z-index: 1000;
+    top: 12px;
+    left: 12px;
+    pointer-events: none;
+    border-radius: 2px;
+    background: rgb(255, 255, 255,0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+  }
 
 .stock_price {
     font-size: 2.25rem;
@@ -432,6 +452,7 @@ body {
         height: 50vh;
         width: 95%;
         margin: 0 auto;
+
     }
 
     .timeframe-button {
@@ -442,4 +463,11 @@ body {
         font-size: 10px;
         margin-right: 7px;
     }
+
+
+    #tooltip{
+        height: 50%;
+    }
+
+    
 }
