@@ -1,7 +1,5 @@
-import numpy as np
 import pandas as pd
 import requests
-from pytz import timezone
 
 
 
@@ -47,6 +45,9 @@ class GROWW:
                 df.Timestamp = pd.to_datetime([entry[0] for entry in data], unit='s', utc=True).tz_convert('Asia/Kolkata')
                 time = url.split(f'{self.eq}/')[1].split('?')[0]
                 chart[time] = df
+                chart[time+"_firstPrice"] = df.Price[0]
+                print(type(df.Price[0]))
+
 
 
         else:   
@@ -58,5 +59,7 @@ class GROWW:
                 df.Timestamp = pd.to_datetime([entry[0] for entry in data], unit='s', utc=True).tz_convert('Asia/Kolkata')
                 time = url.split(f'{self.eq}/')[1].split('?')[0]
                 chart[time] = df
+                chart[time+"_firstPrice"] = df.Price[0]
+
         
         return chart

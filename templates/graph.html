@@ -44,13 +44,13 @@
                     <div class="stock_price">₹{{current_price}}
                         <div class="day_change"">
                         {% if flag==1 %}
-                        <span style=" font-size: 1.2rem;margin-left: 10px;"><i class="fa-solid fa-arrow-up fa-2xs"
-                                style="color: #049f71;"></i>{{day_change}}
+                        <span style=" font-size: 1.2rem;margin-left: 10px;" class="day_change"><i class="fa-solid fa-arrow-up fa-2xs"
+                                style="color: #049f71;"></i><span class="day_value">{{day_change}}</span>
                             </span>
 
                             {%else%}
-                            <span style="margin-left: 10px;"><i class="fa-solid fa-arrow-down fa-2xs"
-                                    style="color: #cd2323;"></i>{{day_change}}</span>
+                            <span style="font-size: 1.2rem;margin-left: 10px;" class="day_change"><i class="fa-solid fa-arrow-down fa-2xs"
+                                    style="color: #cd2323;"></i><span class="day_value">{{day_change}}</span></span>
                             {% endif %}
 
                         </div>
@@ -98,8 +98,10 @@
                             .then(result => {
                                 console.log(result)
                                 let Data = JSON.parse(result);
+                                let current_price = "{{current_price}}";
+
                                 console.log(Data)
-                                updateChartWithData(JSON.parse(Data['graph']),flag=Data['flag'],time_frame=Data['timeframe']);
+                                updateChartWithData(JSON.parse(Data['graph']),flag=Data['flag'],time_frame=Data['timeframe'],_firstPrice=Data['_firstPrice'],current_price=current_price,previous_close = "{{stock_info['Previous Close']}}");
                             })
                             .catch(error => console.error('Error:', error));
                     }

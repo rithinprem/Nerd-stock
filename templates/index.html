@@ -154,30 +154,31 @@
                 <thead>
                     <tr>
                         <th>Stock</th>
+                        <th>Stock Link</th>
                         <th>Client Name</th>
-                        <th>Exchange</th>
+                        <th>Avg. Price</th>
+                        <th>Date</th>
                         <th>Deal Type</th>
                         <th>Action</th>
-                        <th>Date</th>
-                        <th>Avg. Price</th>
                         <th>Quantity</th>
                         <th>Percentage Traded %</th>
-                        <th>Stock Link</th>
+                        <th>Exchange</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in data %}
                     <tr>
                         <td>{{ item['Stock'] }}</td>
+                        <td><a href="{{ url_for('stock_details', stock_id=item['stock_id']) }}">View stock</a></td>
                         <td>{{ item['Client Name'] }}</td>
-                        <td>{{ item['Exchange'] }}</td>
+                        <td>₹{{ item['Avg. Price'] }}</td>
+                        <td class="date-column">{{ item['Date'] }}</td>
                         <td>{{ item['Deal Type'] }}</td>
                         <td>{{ item['Action'] }}</td>
-                        <td class="date-column">{{ item['Date'] }}</td>
-                        <td>₹{{ item['Avg. Price'] }}</td>
                         <td>{{ item['Quantity'] }}</td>
                         <td>{{ item['Percentage Traded %'] }}</td>
-                        <td><a href="{{ url_for('stock_details', stock_id=item['stock_id']) }}">View stock</a></td>
+                        <td>{{ item['Exchange'] }}</td>
+
                     </tr>
                     {% endfor %}
                 </tbody>

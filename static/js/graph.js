@@ -49,14 +49,26 @@ function formatDate(date, timeframe='daily') {
 }
 
 
-function updateChartWithData(newData, flag, time_frame='daily') {
+function updateChartWithData(newData, flag, time_frame='daily',_firstPrice,current_price,previous_close) {
 
+    console.log(_firstPrice)
+    console.log(current_price)
     let firstDataTime = newData[0].time;
     let lastDataTime = newData[newData.length - 1].time;
     const dom = document.getElementById('chart_result');
+    
 
-    if (flag == -1) { colour = '#cd2323' }
-    else { colour = '#00b386' }
+
+    if (flag == -1) { 
+    colour = '#cd2323';
+    document.querySelector('.day_change').innerHTML = '<span style="font-size: 1.2rem;margin-left: 10px;" class="day_change"><i class="fa-solid fa-arrow-down fa-2xs"style="color: #cd2323;"></i><span class="day_value">{{day_change}}</span></span>' }
+    else {
+    colour = '#00b386';
+    document.querySelector('.day_change').innerHTML = '<span style=" font-size: 1.2rem;margin-left: 10px;" class="day_change"><i class="fa-solid fa-arrow-up fa-2xs"style="color: #049f71;"></i><span class="day_value">{{day_change}}</span></span>'}
+
+    if (time_frame=='daily'){document.querySelector(".day_change .day_value").innerHTML =  parseFloat((((current_price - previous_close)/previous_close)*100).toFixed(2))+'%'}
+    else{ document.querySelector(".day_change .day_value").innerHTML =  parseFloat((((current_price - _firstPrice)/_firstPrice)*100).toFixed(2))+'%'}
+
     if (lineSeries) {
         chart.removeSeries(lineSeries);
     }
@@ -151,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add data to the line series
     lineSeries.setData(graphdata);
 
-
+    
 
     const chart_result = document.getElementById('chart_result');
 
@@ -184,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (chart_result.clientWidth > 569) {
             if (leftPos >= toolTipWidth / 2 && leftPos < chartRect.right) {
-                leftPos = leftPos + 50;
+                leftPos = leftPos + 110;
             }
 
             if (leftPos < chartRect.left) {

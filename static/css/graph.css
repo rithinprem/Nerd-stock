@@ -90,7 +90,7 @@ body {
     position: absolute;
     display: none;
     padding: 2px;
-    font-weight: bold;
+    font-weight: 500;
     box-sizing: border-box;
     text-align: left;
     z-index: 1000;

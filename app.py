@@ -12,7 +12,6 @@ import re
 #internal imports
 from GROWW import GROWW
 from GOOGLEFIN import GOOGLEFIN
-from graph import plot
 from view_chart import view_chart_api
 
 
@@ -156,7 +155,8 @@ def stock_details(stock_id):
 
 
     Previous_Close = stock_info['Previous Close']
-    price_details.append(float(re.sub('[^0-9.]', '', Previous_Close)))
+    stock_info['Previous Close'] = float(re.sub('[^0-9.]', '', Previous_Close))
+    price_details.append(stock_info['Previous Close'])
 
     stock_info_knowledge.append(stock_info)
     if stock_knowledge:
@@ -172,6 +172,8 @@ def stock_details(stock_id):
     groww = GROWW(eq)         #object creation for GROWW for chart preparation
     df= groww.df()
     data['daily'] = df
+    data['daily'+"_firstPrice"] = df.Price[0]
+
     def target_function(groww):
         global data
         result = groww.df_week_month_year_pentyear()
@@ -259,7 +261,8 @@ def result(result):
 
 
         Previous_Close = stock_info['Previous Close']
-        price_details.append(float(re.sub('[^0-9.]', '', Previous_Close)))
+        stock_info['Previous Close'] = float(re.sub('[^0-9.]', '', Previous_Close))
+        price_details.append(stock_info['Previous Close'])
 
         stock_info_knowledge.append(stock_info)
         if stock_knowledge:
@@ -278,6 +281,8 @@ def result(result):
         df= groww.df()
 
         data['daily'] = df
+        data['daily'+"_firstPrice"] = df.Price[0]
+
         def target_function(groww):
             global data
             result = groww.df_week_month_year_pentyear()
@@ -320,6 +325,7 @@ def get_data():
     if timeframe == 'daily':
         df = data['daily'].copy()
         flag=data['flag_daily']
+        _firstPrice = data['daily'+'_firstPrice']
         df.columns = ['time','value']
         graphdata = df.to_dict('records')
         graphdata = json.dumps(graphdata)
@@ -329,6 +335,7 @@ def get_data():
     elif timeframe == 'weekly':
         df = data['weekly'].copy()
         flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
+        _firstPrice = data['weekly'+'_firstPrice']
         df.columns = ['time','value']
         df.time = pd.to_datetime(df.time).astype('int64') // 10**9  #epoch
         df['time'] = df.time + 19800   #IST time
@@ -340,6 +347,7 @@ def get_data():
     elif timeframe == 'monthly':
         df = data['monthly'].copy()
         flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
+        _firstPrice = data['monthly'+'_firstPrice']
         df.columns = ['time','value']
         df.time = pd.to_datetime(df.time).astype('int64') // 10**9  #epoch
         df['time'] = df.time + 19800   #IST time
@@ -351,6 +359,7 @@ def get_data():
     elif timeframe == '1y':
         df = data['1y'].copy()
         flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
+        _firstPrice = data['1y'+'_firstPrice']
         df.columns = ['time','value']
         df.time = pd.to_datetime(df.time).astype('int64') // 10**9  #epoch
         df['time'] = df.time + 19800   #IST time
@@ -362,6 +371,7 @@ def get_data():
     else:
         df = data['5y'].copy()
         flag = (1 if (df.tail(1).Price.values[0] - df[0:1].Price.values[0])>0 else -1)
+        _firstPrice = data['5y'+'_firstPrice']
         df.columns = ['time','value']
         df.time = pd.to_datetime(df.time).astype('int64') // 10**9  #epoch
         df['time'] = df.time + 19800   #IST time
@@ -373,6 +383,7 @@ def get_data():
 
     response = dict()
     response['graph'] = result
+    response['_firstPrice'] = _firstPrice
     response['flag'] = flag
     response['timeframe']= timeframe
     response = json.dumps(response)
