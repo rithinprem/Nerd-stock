@@ -46,7 +46,6 @@ class GROWW:
                 time = url.split(f'{self.eq}/')[1].split('?')[0]
                 chart[time] = df
                 chart[time+"_firstPrice"] = df.Price[0]
-                print(type(df.Price[0]))
 
 
 

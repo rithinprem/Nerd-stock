@@ -1,10 +1,7 @@
 import requests
 import pandas as pd
-import numpy as np
-import json
 import datetime
 from dateutil.relativedelta import relativedelta
-from datetime import timezone
 
 
 

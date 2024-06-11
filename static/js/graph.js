@@ -51,8 +51,6 @@ function formatDate(date, timeframe='daily') {
 
 function updateChartWithData(newData, flag, time_frame='daily',_firstPrice,current_price,previous_close) {
 
-    console.log(_firstPrice)
-    console.log(current_price)
     let firstDataTime = newData[0].time;
     let lastDataTime = newData[newData.length - 1].time;
     const dom = document.getElementById('chart_result');
@@ -86,6 +84,8 @@ function updateChartWithData(newData, flag, time_frame='daily',_firstPrice,curre
     resizeChart();
 
 }
+
+
 document.addEventListener('DOMContentLoaded', function () {
     // Get the container element
     const dom = document.getElementById('chart_result');

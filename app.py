@@ -133,6 +133,7 @@ def stock_details(stock_id):
     e = soup.find('p',{'class':'fs075rem gr'}).get_text().strip().replace(" ","").replace("\n","")[4:].split("|")  
     eq = e[0]   #eq = equity
 
+
     price_details = []
     if eq.isnumeric() is False:
         o = GOOGLEFIN(f'{eq}:NSE')
@@ -169,6 +170,7 @@ def stock_details(stock_id):
     else:                     #NSE
         script_code['NSE']=eq
 
+
     groww = GROWW(eq)         #object creation for GROWW for chart preparation
     df= groww.df()
     data['daily'] = df
@@ -181,7 +183,6 @@ def stock_details(stock_id):
 
     t = threading.Thread(target=target_function,args=[groww])
     t.start()
-    t.join()
 
     
     stock_info = stock_info_knowledge[0]
@@ -199,8 +200,8 @@ def stock_details(stock_id):
     df['time'] = df.time + 19800   #IST time
     graphdata = df.to_dict('records')
     graphdata = json.dumps(graphdata)
-
-    # graphHTML =  plot(df,flag)   #plot using plotly
+    stock_name = " ".join(stock_name.split())
+    t.join()
 
     return render_template('graph.html', graphdata=graphdata,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag,script_code=script_code)
 
@@ -290,7 +291,6 @@ def result(result):
 
         t = threading.Thread(target=target_function,args=[groww])
         t.start()
-        t.join()
         
 
         
@@ -312,7 +312,7 @@ def result(result):
         graphdata = df.to_dict('records')
         graphdata = json.dumps(graphdata)
         # graphHTML =  plot(df,flag)   #plot using plotly
-
+        t.join()
         return render_template('graph.html', graphdata=graphdata,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag,script_code=script_code)
 
     
@@ -395,7 +395,6 @@ def get_data():
 def view_chart(scriptcode):
     global script_code
     stock_name = script_code["stock_name"]
-    print(scriptcode)
     response = view_chart_api(scriptcode)
     return render_template('view_chart.html',view_chart_api_result = response,stock_name=stock_name,script_code=script_code)
 
