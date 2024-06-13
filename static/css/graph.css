@@ -82,12 +82,9 @@ body {
 }
 
 #tooltip {
-    /* width: 150px; */
-    height: 40%;
+    margin-top: 20%;
     position: absolute;
     display: none;
-    padding: 2px;
-    font-weight: 500;
     box-sizing: border-box;
     text-align: left;
     z-index: 1000;
@@ -95,7 +92,7 @@ body {
     left: 12px;
     pointer-events: none;
     border-radius: 2px;
-    background: rgb(255, 255, 255,0);
+    background: white;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     
@@ -196,6 +193,7 @@ body {
     /* Eliminates space between table cells */
     background-color: white;
     /* Sets background color to white */
+    border: 1px solid #f1efef;
 }
 
 .stock-table th,
@@ -204,7 +202,7 @@ body {
     /* Adds space around text in each cell */
     text-align: left;
     /* Aligns text to the left */
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #f1efef
     /* Adds a bottom border to each cell */
 }
 
@@ -464,7 +462,7 @@ body {
 
 
     #tooltip{
-        height: 50%;
+        margin-top:90%;
     }
 
     

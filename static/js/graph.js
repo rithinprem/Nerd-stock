@@ -188,8 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
         toolTip.style.display = 'block';
         const data = param.seriesData.get(lineSeries);
         const price = data.value !== undefined ? data.value : data.close;
-        toolTip.innerHTML = `<div style="display: flex; flex-direction: row; align-items: center;"> <div>₹${Math.round(100 * price) / 100}|</div><div>${tooltipContent}</div></div>`;
-
+        toolTip.innerHTML = `<div style="display: flex; flex-direction: row; align-items: center;"><div><p>₹${price.toFixed(2)}| </p></div><div>${tooltipContent}</div></div>`;
         const toolTipWidth = toolTip.offsetWidth;
         const chartRect = chart_result.getBoundingClientRect();
         let leftPos = param.point.x;
@@ -202,17 +201,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (leftPos < chartRect.left) {
                 leftPos = chartRect.left;
             }
+
             if (leftPos + toolTipWidth > chartRect.right) {
                 leftPos = chartRect.right - toolTipWidth;
             }
         } else {
-            if (leftPos >= toolTipWidth / 2 && leftPos < chartRect.right - 100) {
-                leftPos = leftPos - 50;
-            } else {
-                if (leftPos >= chartRect.right - 100) {
-                    leftPos = chartRect.right - toolTipWidth;
-                }
+            if (leftPos + toolTipWidth > chartRect.right) {
+                leftPos = chartRect.right - toolTipWidth;
             }
+            if (leftPos < chartRect.left) {
+                leftPos = chartRect.left;
+            }
+            
         }
 
         toolTip.style.left = `${leftPos}px`;

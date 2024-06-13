@@ -28,13 +28,9 @@ class GOOGLEFIN:
         except Exception as e:
             stock_knowledge=""
 
-        try:
-          current_price = soup.find('div',{'class':'YMlKec fxKbKc'}).get_text()
-          current_price = float(re.sub('[^0-9.]', '', current_price))
-        except Exception as e:
-          current_price = ''
+      
 
-        return json_object,stock_knowledge,current_price
+        return json_object,stock_knowledge
     
 
    

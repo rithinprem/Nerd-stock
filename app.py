@@ -144,21 +144,18 @@ def stock_details(stock_id):
     if eq.isnumeric() is False:
         o = GOOGLEFIN(f'{eq}:NSE')
         stock_info_knowledge=[]
-        stock_info,stock_knowledge,current_price = o.stockinfo()
-        price_details.append(current_price)
+        stock_info,stock_knowledge = o.stockinfo()
         if not stock_info:
             eq = e[1].split(':')[1]
             price_details = []
             o = GOOGLEFIN(f'{eq}:BOM')
             stock_info_knowledge=[]
-            stock_info,stock_knowledge,current_price = o.stockinfo()
-            price_details.append(current_price)
+            stock_info,stock_knowledge = o.stockinfo()
     else:
         price_details = []
         o = GOOGLEFIN(f'{eq}:BOM')
         stock_info_knowledge=[]
-        stock_info,stock_knowledge,current_price = o.stockinfo()
-        price_details.append(current_price)
+        stock_info,stock_knowledge = o.stockinfo()
 
 
     Previous_Close = stock_info['Previous Close']
@@ -193,12 +190,7 @@ def stock_details(stock_id):
     
     stock_info = stock_info_knowledge[0]
     stock_knowledge = stock_info_knowledge[1]
-    current_price = price_details[0]
-    previous_price = price_details[1]
-    day_change = str(abs(round((current_price - previous_price)/previous_price*100,2)))+"%"
-    flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
-    data['flag_daily'] = flag
-    script_code["stock_name"] = stock_name
+    
 
 
     df.columns = ['time','value']
@@ -208,6 +200,13 @@ def stock_details(stock_id):
     graphdata = json.dumps(graphdata)
     stock_name = " ".join(stock_name.split())
     t.join()
+
+    current_price = data['1y'].tail(1).Price.values[0]
+    previous_price = price_details[0]
+    day_change = str(abs(round((current_price - previous_price)/previous_price*100,2)))+"%"
+    flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
+    data['flag_daily'] = flag
+    script_code["stock_name"] = stock_name
 
     return render_template('graph.html', graphdata=graphdata,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag,script_code=script_code)
 
@@ -255,16 +254,14 @@ def result(result):
         eq = result.split("|")[2]
         o = GOOGLEFIN(f'{eq}:NSE')
         stock_info_knowledge=[]
-        stock_info,stock_knowledge,current_price = o.stockinfo()
-        price_details.append(current_price)
+        stock_info,stock_knowledge = o.stockinfo()
         if not stock_info:
           price_details = []
           flag_nse = False
           eq = result.split("|")[1]
           o = GOOGLEFIN(f'{eq}:BOM')
           stock_info_knowledge=[]
-          stock_info,stock_knowledge,current_price = o.stockinfo()
-          price_details.append(current_price)
+          stock_info,stock_knowledge = o.stockinfo()
 
 
         Previous_Close = stock_info['Previous Close']
@@ -302,12 +299,7 @@ def result(result):
         
         stock_info = stock_info_knowledge[0]
         stock_knowledge = stock_info_knowledge[1]
-        current_price = price_details[0]
-        previous_price = price_details[1]
-        day_change = str(abs(round((current_price - previous_price)/previous_price*100,2)))+"%"
-        flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
-        data['flag_daily']=flag
-
+        
         stock_name = result.split("|")[0]
         script_code["stock_name"] = stock_name
 
@@ -317,8 +309,14 @@ def result(result):
         df['time'] = df.time + 19800   #IST time
         graphdata = df.to_dict('records')
         graphdata = json.dumps(graphdata)
-        # graphHTML =  plot(df,flag)   #plot using plotly
         t.join()
+
+        current_price = data['1y'].tail(1).Price.values[0]
+        previous_price = price_details[0]
+        day_change = str(abs(round((current_price - previous_price)/previous_price*100,2)))+"%"
+        flag = (1 if (current_price-previous_price)>0 else -1)  #whether stock change is negative or positive
+        data['flag_daily']=flag
+
         return render_template('graph.html', graphdata=graphdata,stock_name=stock_name,stock_info=stock_info,stock_knowledge=stock_knowledge,current_price=current_price,day_change=day_change,flag=flag,script_code=script_code)
 
     
