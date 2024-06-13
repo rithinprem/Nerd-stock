@@ -92,7 +92,7 @@
 </head>
 
 <body>
-  <div class="loading">
+  <div class="loading" id="loading">
     <div class="dot"></div>
     <div class="dot"></div>
     <div class="dot"></div>
@@ -107,13 +107,13 @@
             fetch('/stockpics')
                 .then(response => response.text())
                 .then(html => {
-                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('loading').style.display = 'none';
                     document.getElementById('content').style.display = 'block';
-                    document.body.style.display='block';
+                    document.body.style.display='block'
                     document.getElementById('content').innerHTML = html;
                 })
                 .catch(error => {
-                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('loading').style.display = 'none';
                     document.getElementById('content').style.display = 'block';
                     document.getElementById('content').innerText = 'An error occurred';
                 });

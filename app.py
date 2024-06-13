@@ -30,7 +30,13 @@ json_object = None #for search when user clicks view stock
 data = dict() #for week_month_year_pentyear chart --threading
 script_code = dict()
 
+
+
 @app.route('/')
+def loader():
+    return render_template('loader.html')
+
+@app.route('/stockpics')
 def index():
     global json_object
 
@@ -408,4 +414,4 @@ def chart_time():
     return response
 
 if __name__ == '__main__':
-    app.run(debug=True,host='192.168.29.170')
+    app.run(debug=True,host='0.0.0.0',port=5000)
