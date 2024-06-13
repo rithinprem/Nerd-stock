@@ -363,6 +363,7 @@ body {
     .heading-2-box-inner {
         flex-direction: column;
         margin-bottom: 25px;
+        align-items: center;
 
     }
 
@@ -401,6 +402,7 @@ body {
         /* Align the text inside <p> to the left */
         margin: 0;
         /* Remove default margin of <p> tag */
+        padding: 10px;
         font-size: 16px;
     }
 
