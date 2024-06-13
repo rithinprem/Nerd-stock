@@ -170,12 +170,15 @@
 
     <script>
 
+
         document.getElementById('stock-search').addEventListener('input', function () {
             var query = this.value;
-            if (query.trim().length === 0) {
+            if (query.trim() === '') {
+                console.log('Empty')
                 document.getElementById('searchResults').innerHTML = '';
                 return;
             }
+
 
             fetch('/search', {
                 method: 'POST',
@@ -192,6 +195,8 @@
                         resultsHtml += '<div onclick="redirectToResult(\'' + id_name + '\')">' + result['search_id'] + '</div>';
                     });
                     document.getElementById('searchResults').innerHTML = resultsHtml;
+                    if (document.getElementById('stock-search').value.trim() === ''){document.getElementById('searchResults').innerHTML = '';}
+
                 });
         });
 

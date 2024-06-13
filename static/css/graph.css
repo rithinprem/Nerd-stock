@@ -15,7 +15,6 @@ body {
 }
 
 .heading {
-    background-color: #fafffe;
     border: 1px solid #bfc2d1;
     height: 79px;
     display: flex;
@@ -23,12 +22,10 @@ body {
 }
 
 .heading-1-box {
-    background-color: #fafffe;
     width: 26vw;
 }
 
 .heading-2-box {
-    background-color: #fafffe;
     width: 26vw;
     align-content: center
 }
@@ -153,7 +150,7 @@ body {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #00b386;
+    background-color: #44475b;
     color: white;
     cursor: pointer;
     font-size: inherit;
@@ -248,7 +245,6 @@ body {
     z-index: 999;
     /* Ensure search results are displayed above other content */
     background-color: white;
-    border: 1px solid #ccc;
     border-top: none;
     border-radius: 0 0 5px 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

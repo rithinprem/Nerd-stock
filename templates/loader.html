@@ -4,14 +4,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Stock Picks</title>
   <style>
     body {
       display: flex;
       height: 100vh;
       justify-content: center;
       align-items: center;
-      background: white
+      background: white;
+      overflow-y: hidden;
     }
 
     .loading {
@@ -20,8 +21,8 @@
 
     .loading .dot {
       position: relative;
-      width: 2em;
-      height: 2em;
+      width: 1em;
+      height: 1em;
       margin: 0.8em;
       border-radius: 50%;
     }
@@ -110,6 +111,7 @@
                     document.getElementById('loading').style.display = 'none';
                     document.getElementById('content').style.display = 'block';
                     document.body.style.display='block'
+                    document.body.style.overflowY='auto'
                     document.getElementById('content').innerHTML = html;
                 })
                 .catch(error => {
