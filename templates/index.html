@@ -20,6 +20,12 @@
             color: #44475b;
         }
 
+        .container {
+            display: flex;
+            flex-direction: column;
+            text-align: justify;
+        }
+
         .body {
 
             display: flex;
@@ -137,7 +143,7 @@
 
             }
 
-            .centered{
+            .centered {
                 margin-top: 20px;
             }
         }
@@ -145,68 +151,85 @@
 </head>
 
 <body>
-    
+
     <h1 class="centered">Stock Picks</h1>
-    <div class="body">
-        <div class="table_Data">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Stock</th>
-                        <th>Stock Link</th>
-                        <th>Client Name</th>
-                        <th>Avg. Price</th>
-                        <th>Date</th>
-                        <th>Deal Type</th>
-                        <th>Action</th>
-                        <th>Quantity</th>
-                        <th>Percentage Traded %</th>
-                        <th>Exchange</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in data %}
-                    <tr>
-                        <td>{{ item['Stock'] }}</td>
-                        <td><a href="{{ url_for('stock_details', stock_id=item['stock_id']) }}">View stock</a></td>
-                        <td>{{ item['Client Name'] }}</td>
-                        <td>₹{{ item['Avg. Price'] }}</td>
-                        <td class="date-column">{{ item['Date'] }}</td>
-                        <td>{{ item['Deal Type'] }}</td>
-                        <td>{{ item['Action'] }}</td>
-                        <td>{{ item['Quantity'] }}</td>
-                        <td>{{ item['Percentage Traded %'] }}</td>
-                        <td>{{ item['Exchange'] }}</td>
+    <div class="container">
+        <div class="body">
+            <div class="table_Data">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Stock</th>
+                            <th>Stock Link</th>
+                            <th>Client Name</th>
+                            <th>Avg. Price</th>
+                            <th>Date</th>
+                            <th>Deal Type</th>
+                            <th>Action</th>
+                            <th>Quantity</th>
+                            <th>Percentage Traded %</th>
+                            <th>Exchange</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in data %}
+                        <tr>
+                            <td>{{ item['Stock'] }}</td>
+                            <td><a href="{{ url_for('stock_details', stock_id=item['stock_id']) }}">View stock</a></td>
+                            <td>{{ item['Client Name'] }}</td>
+                            <td>₹{{ item['Avg. Price'] }}</td>
+                            <td class="date-column">{{ item['Date'] }}</td>
+                            <td>{{ item['Deal Type'] }}</td>
+                            <td>{{ item['Action'] }}</td>
+                            <td>{{ item['Quantity'] }}</td>
+                            <td>{{ item['Percentage Traded %'] }}</td>
+                            <td>{{ item['Exchange'] }}</td>
 
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-    <div class="explain_terms" style="margin-top: 60px;">
-        <p style="text-align: justify;"><b>Bulk deals</b> are defined as a transaction involving at least 0.5% of the
-            total listed shares of a
-            company. Unlike block deals, bulk deals happen during normal trading hours and are visible to all
-            market participants. They show up on the volume charts in trading platforms and dynamically
-            influence stock prices in real-time. </p>
+        <div class="explain_terms" style="margin-top: 60px;">
+            <h1> Welcome to Stock Picks </h1>
 
-        <p style="text-align: justify;"> <b>Block deal</b> is defined as a single trade in which shares greater than
-            5,00,000 in number or more
-            than Rs. 10 crores in value are traded. The minimum value for a block deal used to be Rs. 5 crores
-            but in 2017 the Securities and Exchange Board of India (SEBI) hiked it to Rs. 10 crores. Block deals
-            are executed during a special trading window called the block deal window. Since block deals in the
-            share market happen during a separate trading window they are not visible to the retail investor.
-            Block deals also do not show up on the volume charts in trading platforms.
+            <h3>What We Do ?</h3>
+            <br>
+            Our platform provides comprehensive data on block and bulk deals made in the stock market. These deals are
+            often executed by large financial institutions such as Foreign Institutional Investors (FIIs) and Domestic
+            Institutional Investors (DIIs). By tracking these transactions, you can gain valuable insights into the
+            investment strategies of major market players. <br>
 
-            Block deals may not be executed during normal trading hours but only during a special trading
-            window known as the block deal window. This trading window operates in two shifts of 15 minutes
-            each:
-            <br>
-            – Morning trading window from 8:45 AM to 9:00 AM.
-            <br>
-            – Afternoon trading window from 2:05 PM to 2:20 PM
-        </p>
+            <h3>Why Block and Bulk Deals Matter</h3>
+            <ul>
+                <li><b>Block Deals:</b> These are large trades of shares (usually more than 5 lakh shares or shares
+                    worth more
+                    than ₹5 crore) executed through a single transaction at a price that may or may not differ from the
+                    current
+                    market price. These deals are significant as they indicate confidence in the stock by large
+                    investors.
+                </li><br>
+                <li><b>Bulk Deals:</b>v These involve a minimum of 0.5% of a company's equity shares being traded in a
+                    single or
+                    multiple transactions within a trading day. These transactions, when reported, signal substantial
+                    buying or
+                    selling interest from institutional investors.
+                </li>
+            </ul>
+
+            <h3> How Our Site Helps You </h3>
+            Our site aggregates and displays this crucial data in a user-friendly tabular format, enabling you to:
+            <ul>
+                <li>Identify Investment Opportunities: By following the investment actions of large institutional
+                    investors, you can discover potential stocks to invest in.</li>
+                <li>Understand Market Trends: Gain insights into which sectors and stocks are attracting institutional
+                    interest.</li>
+                <li> Make Informed Decisions: Use the detailed information on each deal to support your investment
+                    decisions.</li>
+            </ul><br>
+            </p>
+        </div>
     </div>
 </body>
 
