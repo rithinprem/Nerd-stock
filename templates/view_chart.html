@@ -115,6 +115,7 @@
                 window.onload = function () {
                         data = {{ view_chart_api_result | safe }}
                         data => data.json()
+                        console.log(data);
                 candlestickSeries.setData(data)} // Fetch data for default time frame (5 years)
 
 
