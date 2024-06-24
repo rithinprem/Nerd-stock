@@ -399,7 +399,7 @@ def get_data():
 def view_chart(scriptcode):
     global script_code
     stock_name = script_code["stock_name"]
-    response = view_chart_api(scriptcode)
+    response = json.dumps(view_chart_api(scriptcode))
     return render_template('view_chart.html',view_chart_api_result = response,stock_name=stock_name,script_code=script_code)
 
 @app.route("/chart_timeframe")
