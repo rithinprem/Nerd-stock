@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
     });
 
-    // Add a line series to the chart
+        // Add a line series to the chart
     lineSeries = chart.addLineSeries({ color: colour, lineWidth: 1.8, crossHairMarkerVisible: false });
 
 

@@ -141,21 +141,27 @@ def stock_details(stock_id):
 
 
     price_details = []
-    if eq.isnumeric() is False:
-        o = GOOGLEFIN(f'{eq}:NSE')
-        stock_info_knowledge=[]
-        stock_info,stock_knowledge = o.stockinfo()
-        if not stock_info:
-            eq = e[1].split(':')[1]
+
+    try:
+        if eq.isnumeric() is False:
+            o = GOOGLEFIN(f'{eq}:NSE')
+            stock_info_knowledge=[]
+            stock_info,stock_knowledge = o.stockinfo()
+            if not stock_info:
+                eq = e[1].split(':')[1]
+                price_details = []
+                o = GOOGLEFIN(f'{eq}:BOM')
+                stock_info_knowledge=[]
+                stock_info,stock_knowledge = o.stockinfo()
+        else:
             price_details = []
             o = GOOGLEFIN(f'{eq}:BOM')
             stock_info_knowledge=[]
             stock_info,stock_knowledge = o.stockinfo()
-    else:
-        price_details = []
-        o = GOOGLEFIN(f'{eq}:BOM')
-        stock_info_knowledge=[]
-        stock_info,stock_knowledge = o.stockinfo()
+
+    except:
+        return("Error in bringing information,contact developer")
+        
 
 
     Previous_Close = stock_info['Previous Close']
