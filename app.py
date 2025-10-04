@@ -74,7 +74,7 @@ def index():
             temp=[]
             for td in tr.find_all('td'):
                 temp.append(td.get_text().strip())
-            temp.append("https://trendlyne.com"+tr.find('a')['href'])
+            temp.append(""+tr.find('a')['href'])
             result.append(temp)
         return result
 
@@ -134,9 +134,11 @@ def stock_details(stock_id):
     'Referer': 'https://www.google.com/', 
     'Upgrade-Insecure-Requests': '1'}
 
+  
     response = requests.get(stock_link,headers=headers)
+
     soup = BeautifulSoup(response.text,'html.parser')
-    e = soup.find('p',{'class':'fs075rem gr'}).get_text().strip().replace(" ","").replace("\n","")[4:].split("|")  
+    e = soup.find('span',{'class':'stock_exchange_details'}).get_text().strip().replace(" ","").replace("\n","")[4:].split("|")  
     eq = e[0]   #eq = equity
 
 
@@ -413,7 +415,6 @@ def chart_time():
     timeframe = request.args.get('timeframe', '')
     script_code = request.args.get('script_code', '')
     stock_name = request.args.get('stockname', '')
-    print(timeframe,script_code,stock_name)
     response = view_chart_api(script_code,timeframe)
     return response
 
