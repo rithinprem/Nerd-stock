@@ -520,7 +520,7 @@ def background_loop():
                 output = indexcheck()
 
                 BOT_TOKEN = '8258044186:AAF-z-a0wwMSFdOykPtek4nVdCc21xnKNlo'
-                CHAT_ID = '847885426'  # Your chat ID
+                CHAT_ID = '847885426'  #  RITHIN ID
                 TEXT = f'👋 Hello Rithin! \ncountid:{a}\n  {output}'
                 a+=1
                 # Telegram API endpoint
@@ -534,6 +534,23 @@ def background_loop():
 
                 # Send the message
                 requests.post(url, data=payload)
+
+
+                CHAT_ID = '7790470446'  # Your DIVY
+                TEXT = f'👋 Hello Divy! \ncountid:{a}\n  {output}'
+                a+=1
+                # Telegram API endpoint
+                url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
+
+                # Payload with message details
+                payload = {
+                    'chat_id': CHAT_ID,
+                    'text': TEXT
+                }
+
+                # Send the message
+                requests.post(url, data=payload)
+
 
 
             else:
@@ -555,6 +572,22 @@ def background_loop():
 
                     # Send the message
                     requests.post(url, data=payload)
+
+                    CHAT_ID = '7790470446'  # Your DIVY
+                    TEXT = f'👋 Hello Divy! \ncountid:{a}\n  {output}'
+                    a+=1
+                    # Telegram API endpoint
+                    url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
+
+                    # Payload with message details
+                    payload = {
+                        'chat_id': CHAT_ID,
+                        'text': TEXT
+                    }
+
+                    # Send the message
+                    requests.post(url, data=payload)
+
 
                     output = prev
 
