@@ -6,6 +6,7 @@ import json
 import concurrent.futures   #multithreading
 import threading
 import re
+import time
 
 
 
@@ -29,6 +30,7 @@ def block_user_agent():
 json_object = None #for search when user clicks view stock 
 data = dict() #for week_month_year_pentyear chart --threading
 script_code = dict()
+
 
 
 
@@ -417,6 +419,151 @@ def chart_time():
     stock_name = request.args.get('stockname', '')
     response = view_chart_api(script_code,timeframe)
     return response
+
+
+
+
+
+
+
+
+
+
+
+
+def indexcheck():
+    global json_object
+
+    import requests
+    from bs4 import BeautifulSoup
+    import pandas as pd
+    import json
+
+    URLS = [
+        "https://trendlyne.com/portfolio/bulk-block-deals/54044/vanguard-fund/",
+        "https://trendlyne.com/portfolio/bulk-block-deals/53902/government-of-singapore/",
+        "https://trendlyne.com/portfolio/bulk-block-deals/597533/icici-group-portfolio/",
+        "https://trendlyne.com/portfolio/bulk-block-deals/597531/sbi-group-portfolio/",
+        "https://trendlyne.com/portfolio/bulk-block-deals/597532/hdfc-group-portfolio/",
+        "https://trendlyne.com/portfolio/bulk-block-deals/53945/kotak-mahindra-group-portfolio/"
+    ]
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.60 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Cache-Control': 'max-age=0',
+        'Referer': 'https://www.google.com/',
+        'Upgrade-Insecure-Requests': '1',
+    }
+
+    def load_url(url):
+        response = requests.get(url, headers=headers)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        list_col_name = soup.find_all('tr')[0].find_all('th')
+        list_rows = soup.find_all('tr')[1:]
+        result = []
+        result.append([col.text for col in list_col_name])
+        result[0].append("Stock Link")
+
+        for tr in list_rows:
+            temp = []
+            for td in tr.find_all('td'):
+                temp.append(td.get_text().strip())
+            temp.append("" + tr.find('a')['href'])
+            result.append(temp)
+        return result
+
+    def main():
+        df = None
+        for url in URLS:
+            result = load_url(url)
+            if df is None:
+                df = pd.DataFrame(result[1:], columns=result[0])
+            else:
+                df = pd.concat([df, pd.DataFrame(result[1:], columns=result[0])], ignore_index=False)
+        return df
+
+    df = main()
+
+    df.Date = pd.to_datetime(df.Date, errors='coerce')
+    df['Percentage Traded %'] = df['Percentage Traded %'].str.replace('%', '', regex=False)
+    df['Percentage Traded %'] = pd.to_numeric(df['Percentage Traded %'], errors='coerce')
+    df.sort_values(['Date', 'Percentage Traded %'], ascending=False, inplace=True)
+    df['Date'] = df['Date'].dt.strftime('%d-%b-%Y')
+    df.Date = df.Date.astype('str')
+    df = df.reset_index()
+    df.drop('index', axis=1, inplace=True)
+    df['stock_id'] = df.index
+    df['Stock Link'] = "nerd-stock.onrender.com"
+    json_string = df[:150].to_json(orient='records')
+    json_object = json.loads(json_string)[:1]
+
+    
+    # Prettify as a string
+    output = json.dumps(json_object, indent=4)
+
+
+    return output
+
+
+
+# Background thread function
+def background_loop():
+        a =0
+        output = None
+        while True:
+
+            if output is None:
+                output = indexcheck()
+
+                BOT_TOKEN = '8258044186:AAF-z-a0wwMSFdOykPtek4nVdCc21xnKNlo'
+                CHAT_ID = '847885426'  # Your chat ID
+                TEXT = f'👋 Hello Rithin! \ncountid:{a}\n  {output}'
+                a+=1
+                # Telegram API endpoint
+                url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
+
+                # Payload with message details
+                payload = {
+                    'chat_id': CHAT_ID,
+                    'text': TEXT
+                }
+
+                # Send the message
+                requests.post(url, data=payload)
+
+
+            else:
+                prev = indexcheck()
+                if output != prev:
+                    # Replace with your actual bot token and chat ID
+                    BOT_TOKEN = '8258044186:AAF-z-a0wwMSFdOykPtek4nVdCc21xnKNlo'
+                    CHAT_ID = '847885426'  # Your chat ID
+                    TEXT = f'👋 Hello Rithin! \ncountid:{a}\n  {output}'
+                    a+=1
+                    # Telegram API endpoint
+                    url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
+
+                    # Payload with message details
+                    payload = {
+                        'chat_id': CHAT_ID,
+                        'text': TEXT
+                    }
+
+                    # Send the message
+                    requests.post(url, data=payload)
+
+                    output = prev
+
+            time.sleep(300)   #Every five minutes
+
+# loop for checking updates
+thread = threading.Thread(target=background_loop,daemon=True)
+thread.start()
+
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0',port=5000)
