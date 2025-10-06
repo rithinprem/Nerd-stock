@@ -1,27 +1,33 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stock Picks</title>
-
-  <!--  Industrial font: Inter is open-source & metric-neutral -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
   <style>
-    /* ----------  LOADER-ONLY STYLES  ---------- */
-    #loading {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
+    body {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #ffffff;
-      font-family: 'Inter', sans-serif;
+      align-items: center;
+      background: white;
+      overflow-y: hidden;
     }
 
-    .scan-grid {
+    .loading {
+      display: flex;
+    }
+
+    .loading .dot {
+      position: relative;
+      width: 1em;
+      height: 1em;
+      margin: 0.8em;
+      border-radius: 50%;
+    }
+
+    .loading .dot::before {
       position: absolute;
       inset: 0;
       background-image:
@@ -35,26 +41,32 @@
       100% { background-position: 40px 40px; }
     }
 
-    .loader-wrapper { text-align: center; color: #000080; }
-
-    .ring {
-      width: 120px; height: 120px;
-      margin: 0 auto 28px;
-      border: 8px solid rgba(127,249,255,.25);
-      border-top: 8px solid #7ef9ff;
-      border-radius: 50%;
-      animation: spin 1.2s linear infinite, pulse 1.8s ease-in-out infinite alternate;
-    }
-    @keyframes spin   { to { transform: rotate(360deg); } }
-    @keyframes pulse  {
-      from { box-shadow: 0 0 0 0 rgba(127,249,255,.6), 0 0 0 0 rgba(0,255,162,.3); }
-      to   { box-shadow: 0 0 0 24px rgba(127,249,255,0), 0 0 0 40px rgba(0,255,162,0); }
+    .loading .dot:nth-child(1)::before {
+      animation-delay: 0.2s;
     }
 
-    .caption {
-      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
-      font-weight: 600;
-      letter-spacing: .5px;
+    .loading .dot:nth-child(2) {
+      background: #89cff0;
+    }
+
+    .loading .dot:nth-child(2)::before {
+      animation-delay: 0.4s;
+    }
+
+    .loading .dot:nth-child(3) {
+      background: #4682b4;
+    }
+
+    .loading .dot:nth-child(3)::before {
+      animation-delay: 0.6s;
+    }
+
+    .loading .dot:nth-child(4) {
+      background: #0f52ba;
+    }
+
+    .loading .dot:nth-child(4)::before {
+      animation-delay: 0.8s;
     }
     .line1, .line2 {
       display: inline-block;
@@ -62,23 +74,21 @@
       white-space: nowrap;
       width: 0;
     }
-    .line1 { animation: type 1s steps(30,end) forwards; }
-    .line2 { animation: type 1s steps(30,end) 1s forwards; }
-    @keyframes type { to { width: 100%; } }
 
-    /* ----------  CONTENT AREA  ---------- */
-    #content { display: none; }
+    .loading .dot:nth-child(5)::before {
+      animation-delay: 1s;
+    }
 
-    /* ----------  MOBILE SAFEGUARD  ---------- */
-    @media (max-width: 480px) {
-      .caption {
-        font-size: clamp(.9rem, 4vw, 1.1rem);
-        padding: 0 12px;
-        letter-spacing: .3px;
+    @keyframes wave {
+
+      50%,
+      75% {
+        transform: scale(2.5);
       }
-      .ring {
-        width: 80px; height: 80px;
-        border-width: 6px;
+
+      80%,
+      100% {
+        opacity: 0;
       }
     }
   </style>
@@ -97,27 +107,26 @@
     </div>
   </div>
 
-  <!--  MAIN CONTENT  -->
-  <div id="content"></div>
+  <div id="content" style="display: none;"></div>
 
-  <!--  FETCH SCRIPT  -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      fetch('/stockpics')
-        .then(r => r.text())
-        .then(html => {
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('content').innerHTML = html;
-          document.getElementById('content').style.display = 'block';
-        })
-        .catch(err => {
-          console.error(err);
-          document.getElementById('loading').style.display = 'none';
-          document.getElementById('content').style.display = 'block';
-          document.getElementById('content').innerHTML =
-            `<pre style="color:red">Fetch failed:\n${err}</pre>`;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/stockpics')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('content').style.display = 'block';
+                    document.body.style.display='block'
+                    document.body.style.overflowY='auto'
+                    document.getElementById('content').innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('content').style.display = 'block';
+                    document.getElementById('content').innerText = 'An error occurred';
+                });
         });
-    });
-  </script>
+    </script>
+
 </body>
 </html>
