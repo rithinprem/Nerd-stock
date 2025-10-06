@@ -489,6 +489,7 @@ def indexcheck():
     df = main()
 
     df.Date = pd.to_datetime(df.Date, errors='coerce')
+    df['Stock'] = df['Stock'].str.replace('\n', ' ', regex=False).str.replace('  ', '', regex=False).str.strip()
     df['Percentage Traded %'] = df['Percentage Traded %'].str.replace('%', '', regex=False)
     df['Percentage Traded %'] = pd.to_numeric(df['Percentage Traded %'], errors='coerce')
     df.sort_values(['Date', 'Percentage Traded %'], ascending=False, inplace=True)
@@ -503,7 +504,7 @@ def indexcheck():
 
     
     # Prettify as a string
-    output = json.dumps(json_object, indent=4)
+    output = json.dumps(json_object, indent=5)
 
 
     return output
