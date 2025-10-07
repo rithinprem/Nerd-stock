@@ -30,6 +30,8 @@ def block_user_agent():
 json_object = None #for search when user clicks view stock 
 data = dict() #for week_month_year_pentyear chart --threading
 script_code = dict()
+previous_list =list() #for checking updates
+
 
 
 
@@ -432,7 +434,6 @@ def chart_time():
 
 
 def indexcheck():
-    global json_object
 
     import requests
     from bs4 import BeautifulSoup
@@ -500,29 +501,39 @@ def indexcheck():
     df['stock_id'] = df.index
     df['Stock Link'] = "nerd-stock.onrender.com"
     json_string = df[:150].to_json(orient='records')
-    json_object = json.loads(json_string)[:1]
+    output = json.loads(json_string)[:20]
 
     
-    # Prettify as a string
-    output = json.dumps(json_object, indent=5)
-
-
     return output
-
-
 
 # Background thread function
 def background_loop():
         a =0
-        output = None
+        global previous_list
+
         while True:
-
-            if output is None:
+            if previous_list == []:
                 output = indexcheck()
-
+                data = output[0]
                 BOT_TOKEN = '8258044186:AAF-z-a0wwMSFdOykPtek4nVdCc21xnKNlo'
                 CHAT_ID = '847885426'  #  RITHIN ID
-                TEXT = f'👋 Hello Rithin! \ncountid:{a}\n  {output}'
+                TEXT = f"""👋 Hello Rithin! 
+    📈 *Stock Alert*
+
+🔹 Stock: {data['Stock']}
+🔹 Client: {data['Client Name']}
+🔹 Exchange: {data['Exchange']}
+🔹 Deal Type: {data['Deal Type']}
+🔹 Action: {data['Action']}
+🔹 Date: {data['Date']}
+🔹 Avg. Price: ₹{data['Avg. Price']}
+🔹 Quantity: {data['Quantity']}
+🔹 % Traded: {data['Percentage Traded %']}%
+🔗 [View Stock]({data['Stock Link']})
+🆔 Stock ID: {data['stock_id']}
+🔹 countid:{a}"""
+
+                previous_list.extend(list(output))
                 a+=1
                 # Telegram API endpoint
                 url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
@@ -530,74 +541,129 @@ def background_loop():
                 # Payload with message details
                 payload = {
                     'chat_id': CHAT_ID,
-                    'text': TEXT
+                    'text': TEXT,
+                    'parse_mode': 'Markdown'
+
                 }
 
                 # Send the message
                 requests.post(url, data=payload)
 
 
-                CHAT_ID = '7790470446'  # Your DIVY
-                TEXT = f'👋 Hello Divy! \ncountid:{a}\n  {output}'
-                a+=1
+                CHAT_ID_ = '7790470446'  # Your DIVY
+                TEXT_ = f"""👋 Hello Divy! 
+    📈 *Stock Alert*
+
+🔹 Stock: {data['Stock']}
+🔹 Client: {data['Client Name']}
+🔹 Exchange: {data['Exchange']}
+🔹 Deal Type: {data['Deal Type']}
+🔹 Action: {data['Action']}
+🔹 Date: {data['Date']}
+🔹 Avg. Price: ₹{data['Avg. Price']}
+🔹 Quantity: {data['Quantity']}
+🔹 % Traded: {data['Percentage Traded %']}%
+🔗 [View Stock]({data['Stock Link']})
+🆔 Stock ID: {data['stock_id']}
+🔹 countid:{a}"""
+                   
                 # Telegram API endpoint
                 url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
 
                 # Payload with message details
-                payload = {
-                    'chat_id': CHAT_ID,
-                    'text': TEXT
+                payload_ = {
+                    'chat_id': CHAT_ID_,
+                    'text': TEXT_,
+                    'parse_mode': 'Markdown'
                 }
 
                 # Send the message
-                requests.post(url, data=payload)
+                requests.post(url, data=payload_)
 
 
 
             else:
-                prev = indexcheck()
-                if output != prev:
-                    # Replace with your actual bot token and chat ID
-                    BOT_TOKEN = '8258044186:AAF-z-a0wwMSFdOykPtek4nVdCc21xnKNlo'
-                    CHAT_ID = '847885426'  # Your chat ID
-                    TEXT = f'👋 Hello Rithin! \ncountid:{a}\n  {output}'
-                    a+=1
-                    # Telegram API endpoint
-                    url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
+                current_output = indexcheck()
+                current_output = list(current_output)
+                if current_output != previous_list:
+                    for item in current_output:
+                        if item not in previous_list:
 
-                    # Payload with message details
-                    payload = {
-                        'chat_id': CHAT_ID,
-                        'text': TEXT
-                    }
+                            data = {}
+                            data.update(item)
+                          
+                            # Replace with your actual bot token and chat ID
+                            BOT_TOKEN = '8258044186:AAF-z-a0wwMSFdOykPtek4nVdCc21xnKNlo'
+                            CHAT_ID = '847885426'  # Your chat ID
+                            TEXT = f"""👋 Hello Rithin! 
+    📈 *Stock Alert*
 
-                    # Send the message
-                    requests.post(url, data=payload)
+🔹 Stock: {data['Stock']}
+🔹 Client: {data['Client Name']}
+🔹 Exchange: {data['Exchange']}
+🔹 Deal Type: {data['Deal Type']}
+🔹 Action: {data['Action']}
+🔹 Date: {data['Date']}
+🔹 Avg. Price: ₹{data['Avg. Price']}
+🔹 Quantity: {data['Quantity']}
+🔹 % Traded: {data['Percentage Traded %']}%
+🔗 [View Stock]({data['Stock Link']})
+🆔 Stock ID: {data['stock_id']}
+🔹 countid:{a}"""                          
+                            a+=1
+                            # Telegram API endpoint
+                            url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
 
-                    CHAT_ID = '7790470446'  # Your DIVY
-                    TEXT = f'👋 Hello Divy! \ncountid:{a}\n  {output}'
-                    a+=1
-                    # Telegram API endpoint
-                    url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
+                            # Payload with message details
+                            payload = {
+                                'chat_id': CHAT_ID,
+                                'text': TEXT,
+                                'parse_mode': 'Markdown'
+                            }
 
-                    # Payload with message details
-                    payload = {
-                        'chat_id': CHAT_ID,
-                        'text': TEXT
-                    }
-
-                    # Send the message
-                    requests.post(url, data=payload)
+                            # Send the message
+                            requests.post(url, data=payload)
 
 
-                    output = prev
+                            CHAT_ID_ = '7790470446'  # Your DIVY
+                            TEXT_ = f"""👋 Hello Divy! 
+    📈 *Stock Alert*
 
-            time.sleep(300)   #Every five minutes
+🔹 Stock: {data['Stock']}
+🔹 Client: {data['Client Name']}
+🔹 Exchange: {data['Exchange']}
+🔹 Deal Type: {data['Deal Type']}
+🔹 Action: {data['Action']}
+🔹 Date: {data['Date']}
+🔹 Avg. Price: ₹{data['Avg. Price']}
+🔹 Quantity: {data['Quantity']}
+🔹 % Traded: {data['Percentage Traded %']}%
+🔗 [View Stock]({data['Stock Link']})
+🆔 Stock ID: {data['stock_id']}
+🔹 countid:{a}"""                                       
+                            # Telegram API endpoint
+                            url = f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage'
+
+                            # Payload with message details
+                            payload_ = {
+                                'chat_id': CHAT_ID_,
+                                'text': TEXT_,
+                                'parse_mode': 'Markdown'
+                            }
+
+                            # Send the message
+                            requests.post(url, data=payload_)
+
+
+                    previous_list = current_output.copy() 
+
+            time.sleep(10)   #Every five minutes
 
 # loop for checking updates
 thread = threading.Thread(target=background_loop,daemon=True)
 thread.start()
 
 
+
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0',port=5000)
+    app.run(debug=False,host='0.0.0.0',port=5000)

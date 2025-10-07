@@ -108,12 +108,12 @@
         .then(html => {
           document.getElementById('loading').style.display = 'none';
           document.getElementById('content').innerHTML = html;
-          document.getElementById('content').style.display = 'block';
+          document.getElementById('content').style.display = 'flex';
         })
         .catch(err => {
           console.error(err);
           document.getElementById('loading').style.display = 'none';
-          document.getElementById('content').style.display = 'block';
+          document.getElementById('content').style.display = 'flex';
           document.getElementById('content').innerHTML =
             `<pre style="color:red">Fetch failed:\n${err}</pre>`;
         });

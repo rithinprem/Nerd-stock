@@ -1,15 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admintory Order Details</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f6fb;
+      color: #333;
+    }
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: #3b49df;
+      color: white;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+    }
+    .sidebar nav ul {
+      list-style: none;
+    }
+    .sidebar nav ul li {
+      margin: 1rem 0;
+    }
+    .sidebar nav ul li a {
+      color: #c8cdff;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: 0.2s;
+    }
+    .sidebar nav ul li a:hover {
+      color: white;
+    }
+    .sidebar nav ul li.active a {
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Main content */
+    .main-content {
+      flex: 1;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .breadcrumbs {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .btn-primary {
+      background: #3b49df;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .btn-primary:hover {
+      background: #2c38b2;
+    }
+
+    /* Search / filter bar */
+    .search-filter {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .search-filter input,
+    .search-filter select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    /* Table section */
+    .table-section {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .table-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .table-actions .left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .table-actions select {
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .action-label {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow-x: auto;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 8px;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      background: #fafafa;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    tbody tr:hover {
+      background: #f9f9f9;
+    }
+
+    .status {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: white;
+    }
+    .status.pending {
+      background: #ff9900;
+    }
+    .status.shipped {
+      background: #28a745;
+    }
+    .status.cancelled {
+      background: #dc3545;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 16px;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .pagination button {
+      background: #eef0fa;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .pagination button:hover {
+      background: #dfe2f7;
+    }
+    .pagination button.active {
+      background: #3b49df;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+      .main-content {
+        padding: 12px;
+      }
+      table {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="item"></div>
+  <div class="container">
+    <aside class="sidebar">
+      <div class="logo">ADMINTORY</div>
+      <nav>
+        <ul>
+          <li><a href="#">Dashboard</a></li>
+          <li><a href="#">Content</a></li>
+          <li class="active"><a href="#">Orders</a></li>
+          <li><a href="#">Customers</a></li>
+          <li><a href="#">Reports</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <header class="page-header">
+        <div class="breadcrumbs">Dashboard &gt; Orders</div>
+        <button class="btn-primary">Create New</button>
+      </header>
+
+      <section class="search-filter">
+        <input type="text" placeholder="Search by name, company, etc." />
+        <select>
+          <option>All Category</option>
+        </select>
+        <select>
+          <option>All Status</option>
+        </select>
+        <button class="btn-primary">Search</button>
+      </section>
+
+      <section class="table-section">
+        <div class="table-actions">
+          <div class="left">
+            <input type="checkbox" id="selectAll" />
+            <span class="action-label">Product Summary</span>
+          </div>
+          <div class="right">
+            <select>
+              <option>Show All Columns</option>
+            </select>
+            <button class="btn-primary">Dispatch Selected</button>
+          </div>
+        </div>
+
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>ID</th>
+              <th>Shopify #</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Customer</th>
+              <th>Email</th>
+              <th>Country</th>
+              <th>Shipping</th>
+              <th>Source</th>
+              <th>Order Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td>1077620</td>
+              <td>17713</td>
+              <td>22 Jan 2020</td>
+              <td><span class="status pending">Pending</span></td>
+              <td>Ahmed</td>
+              <td>ahmed.123@mail.com</td>
+              <td>Australia</td>
+              <td>Australia Post API</td>
+              <td>ShopifyAPI</td>
+              <td>Customer</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td>1077621</td>
+              <td>17714</td>
+              <td>25 Jan 2020</td>
+              <td><span class="status shipped">Shipped</span></td>
+              <td>Julia</td>
+              <td>julia@mail.com</td>
+              <td>USA</td>
+              <td>FedEx</td>
+              <td>Manual</td>
+              <td>Retail</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" /></td>
+              <td>1077622</td>
+              <td>17715</td>
+              <td>29 Jan 2020</td>
+              <td><span class="status cancelled">Cancelled</span></td>
+              <td>Rahul</td>
+              <td>rahul@outlook.com</td>
+              <td>India</td>
+              <td>BlueDart</td>
+              <td>API</td>
+              <td>Customer</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          <button>&laquo;</button>
+          <button class="active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button>&raquo;</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
   <script>
-    document.getElementById('item')
+    document.addEventListener("DOMContentLoaded", () => {
+      const selectAll = document.getElementById("selectAll");
+      const checkboxes = document.querySelectorAll(".data-table tbody input[type='checkbox']");
+      selectAll.addEventListener("change", (e) => {
+        checkboxes.forEach(cb => cb.checked = e.target.checked);
+      });
+
+      const paginationButtons = document.querySelectorAll(".pagination button");
+      paginationButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          paginationButtons.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+      });
+    });
   </script>
 </body>
-
 </html>
